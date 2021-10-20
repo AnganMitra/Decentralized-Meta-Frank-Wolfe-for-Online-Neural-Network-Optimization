@@ -1,0 +1,138 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{verbatim}
+\usepackage{amsmath,amsfonts,mathtools,bm}
+\usepackage{geometry}
+\usepackage{subfig}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{newclude}
+% \usepackage{appendix}
+\usepackage{caption}
+% \usepackage{subcaption}
+\usepackage{gensymb}
+\usepackage{caption}
+\usepackage{hyperref}
+\usepackage[switch]{lineno}  
+\usepackage{cleveref}
+\captionsetup[figure]{font=small}
+
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\newtheorem{theorem}{Theorem}
+\newtheorem*{theorem*}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem*{lemma*}{Lemma} 
+\newtheorem{claim}{Claim}
+\newtheorem{remark}{Remark}
+\newenvironment{claimproof}{\noindent\emph{Proof of claim.}}{\hfill$\qed$}
+
+\newcommand{\vect}[1]{\ensuremath{\bm{#1}}}
+\newcommand{\E}{\ensuremath{\mathbb{E}}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
+%%comment in algorithms
+\renewcommand{\algorithmiccomment}[1]{\hfill \# #1}
+
+\newcommand{\denis}[1]{\textcolor{green}{{\footnotesize
+#1}}\marginpar{\raggedright\tiny \textcolor{green}{Denis}}}
+
+\newcommand{\thang}[1]{\textcolor{blue}{{\footnotesize
+#1}}\marginpar{\raggedright\tiny \textcolor{blue}{Thang}}}
+
+\newcommand{\angan}[1]{\textcolor{blue}{{\footnotesize
+#1}}\marginpar{\raggedright\tiny \textcolor{yellow}{Angan}}}
+
+\newcommand{\tuan}[1]{\textcolor{red}{{\footnotesize
+#1}}\marginpar{\raggedright\tiny \textcolor{red}{Tuan}}}
+
+\newcommand{\paul}[1]{\textcolor{violet}{{\footnotesize
+#1}}\marginpar{\raggedright\tiny \textcolor{violet}{Paul}}}
+
+% \modulolinenumbers[5]
+
+
+% \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+%     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{Decentralized Meta Frank Wolfe for Online Neural Network Optimization}
+
+% \author{
+% \IEEEauthorblockN{Angan Mitra}
+% \IEEEauthorblockA{\textit{Qarnot Computing} \\
+% % \textit{name of organization (of Aff.)}\\
+% Paris, France \\
+% angan.mitra@qarnot-computing.com}
+% \and\IEEEauthorblockN{Kim Thang Nguyen}
+% \IEEEauthorblockA{University Paris Saclay, France\\
+% % \textit{name of organization (of Aff.)}\\
+% Paris, France \\
+% kimthang.nguyen@univ-evry.fr}
+% \and
+% \IEEEauthorblockN{ Tuan-Anh Nguyen, \\ Denis Trystram, Paul Youssef}
+% \IEEEauthorblockA{\textit{Laboratory of Informatics} \\
+% % \textit{name of organization (of Aff.)}\\
+% Grenoble, France \\
+% firstname.lastname@imag.fr}
+
+% }
+
+\maketitle
+
+
+\begin{abstract}
+The design of decentralized learning algorithms is important in the fast-growing world in which data are distributed over participants with limited local computation resources and  communication. In this direction, we propose an online algorithm minimizing non-convex loss functions aggregated from individual data/models distributed over a network. We provide the theoretical performance guarantee of our algorithm and demonstrate its utility on a real life smart building.   
+
+\begin{comment}
+Streaming data from IoT devices usually needs a data-lake or a database to dump sensor values if not processed on the go. 
+A report in 2019 by Cisco predicts the data storage capacity to reach around 50 Zeta Bytes by 2030. 
+In parallel, generated data can be too sensitive to share depending on it's source for example images from a video-surveillance room. 
+Recent trends in artificial intelligence like federated learning talks about privacy by design algorithms where machine-learnt functions are shared instead of raw data.
+Such literature till now mainly focuses on centralized yet distributed systems where a mediator node controls the process of federation. 
+Such a methodology always needs to trust an external third party, so that the latter does not share insights from participating models to the outside world.
+Decentralization of learning techniques has the potential to relieve the dependency of such mediators through peer to peer (P2P) knowledge exchanges.
+% Past work has not focused much on linkages between nodes in a knowledge sharing environment.
+Our algorithms are designed to update deep learning models in an online manner for every node in a network topology of connected learners. 
+We demonstrate the utility of decentralized learning on a real life smart building where zones across multiple floors are considered as a connected set of learners. 
+Each zone has a neural network that is trained in an online manner for predictive forecasting of indoor temperature.
+The work gives an experimental insight to understand how certain topologies of orchestration of learners affect the learning.
+Finally we highlight the role of decentralization by bench-marking against the state of the art Meta Frank Wolfe implementation with exact gradients with an experimental approximation ratio of 1.4.\end{comment}
+
+
+
+\end{abstract}
+
+\begin{IEEEkeywords}
+Decentralized Online Learning, Non Convex Functions, Neural Networks,  Smart building application.
+\end{IEEEkeywords}
+
+
+\include*{chapters/introduction}
+\include*{chapters/relatedwork}
+\include*{chapters/formulation}
+\include*{chapters/experiments}
+\include*{chapters/conclusion}
+
+
+% \section*{Acknowledgment}
+% Project 
+
+\bibliographystyle{IEEEtran}
+\bibliography{ref.bib}
+
+\onecolumn 
+\include{chapters/appendix_exact}
+\include{chapters/appendix_stoc}
+% \include{chapters/appendix_prediction}
+\end{document}

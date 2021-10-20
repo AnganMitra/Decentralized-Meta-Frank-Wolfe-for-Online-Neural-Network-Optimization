@@ -1,0 +1,142 @@
+\section{Introduction}
+\label{chap:intro}
+
+%In the distributed machine learning framework, data is often collected near the data-generating devices such as IoT sensors. 
+%Data is then transferred across a network (such as Internet) to be processed in some remote data-processing centers. At the end, the results of such computations are transferred back through the network to the original devices.
+%%
+%This way of processing data has two major drawbacks.
+%First, it has huge communication overheads, causing high energy consumption.
+%Second, this model has a limited ability for handling real-time data where frequent to-and-from data movements can easily overwhelm the entire system.
+%
+% About federated learning.
+
+Over the recent years, it has been witnessed a tremendous growth of data, in particular collected near the data-generating devices such as IoT sensors. 
+The data is then transferred across a network (such as Internet) to be processed in some remote data-processing centers. 
+At the end, the results of such computations, in particular learning procedures, are transferred back through the network to the original devices.
+%
+This way of processing data has two major drawbacks.
+First, it has huge communication overheads, causing high energy consumption.
+Second, this model has a limited ability for handling real-time data where frequent to-and-from data movements can easily overwhelm the entire system.
+
+Machine learning (ML in short) has been proposed recently to address these two challenges. A new ML paradigm, namely \emph{federated learning}~\cite{McMahanothers:Advances-and-Open}, has emerged naturally and has gained a lot attention. The main key factors behind the success of federated learning 
+is its ability to perform computations close to the data locations, therefore avoiding huge communication overheads and lowering data privacy concerns. 
+%
+%
+% Edge and its link with machine learning
+The federated learning framework is particularly interesting in the context where huge amounts of data are needed to train the underlying machine learning models. 
+Often, such data is generated locally across multiple nodes in online and distributed fashion. 
+Thus, one of the main challenges while deploying AI solutions in federated learning framework is to design optimization algorithms that are robust under uncertainty and efficient in terms of both computation and communication costs. 
+% However, one of the main challenges while deploying machine learning algorithms 
+%A great challenge is to perform machine learning algorithms, aften after some tuning of the algorithms, in order to fulfill the memory and computing constraints of the edge devices. 
+%More and more studies investigate learning algorithms that are embedded into low-complex edge computing devices.
+%Such computing components are exchanging the parameters of their local models 
+%and they update locally their models~\cite{federatedLearning2017}. 
+
+In this paper, we consider federated learning in both \emph{online} and \emph{decentralized} settings. 
+The study within this framework is a crucial step towards real-life applications and 
+a challenging theoretical problem. 
+%In many settings, learning in the edge is crucial and becomes more and more important due to 
+%the large volume of dataset distributed among participants and the privacy of their dataset. 
+%It is necessary to efficiently exploit computational resources
+% that are spread over a connected network by performing local computations.
+More specifically, we study problems in the context of federated learning at the intersection of two rapidly 
+evolving fields: namely \emph{decentralized optimization} and \emph{online learning}. 
+%
+\begin{itemize}
+\item
+Decentralized optimization focuses on the design and analysis of 
+optimization algorithms that utilize local computation and communication among interconnected computing nodes.
+It plays a vital role in a wide variety of applications that arise in the domain of 
+machine learning~\cite{Deori:2016,Zheng:2018,Tsianos:2012b}, control theory~\cite{Liu:2010,Cao:2013}, signal processing~\cite{Reisizadeh:2019} and operations research~\cite{Recht:2012}.  
+
+%A simple example in machine learning is the model fitting using maximum likelihood estimator where given a set of data points, one needs to estimate the parameters of the model through risk minimization~\cite{Vapnik:1998}. Here, the global objective is often defined in terms of an average of convex local loss functions such as square loss or logistic loss that are associated with each data point in the set. Due to a large volume of dataset, these optimization tasks cannot be performed on a single computing node. Instead, one needs to choose decentralized solutions that can efficiently exploit computational resources that are spread over a connected network. Additionally, local computations should be light so that they can be performed on a single node.
+%This differs from the centralized distributed optimization where the information from different nodes need to be sent to a central processing unit. 
+%
+%Therefore, unlike centralized algorithms, decentralized algorithms are harder to design and analyze as they require stronger assumptions for convergence guarantee. 
+
+%In this paper, we consider the following standard formulation (see for example ~\cite{WaiLafond17:Decentralized-Frank--Wolfe}) for decentralized optimization : 
+%%%%
+%%%$
+%%%	\min_{\vec{x} \in {\cal K}} \frac{1}{n}  \sum_{i = 1}^n f_i(\vec{x})
+%%%$
+%%%%
+%%% where $f_i : {\cal K} \rightarrow \mathbb{R}$ is a continuous differentiable function that can only be accessed by the $i$th agent and ${\cal K}$ is a closed and bounded convex set in $\mathbb{R}^d$. 
+ 
+\item
+Online learning is a paradigm in machine learning for studying optimization problems to maintain robust solutions under the uncertainty of the future.  
+This captures many real-world scenarios including in artificial intelligence and machine learning. 
+In online learning, one needs to design an algorithm that repeatedly chooses a strategy from a given set so that the performance is as good as the best fixed action in hindsight. 
+Online optimization has been widely studied in machine learning (see \cite{Hazanothers16:Introduction-to-online} as a starting point). 
+\end{itemize}
+
+%In many learning applications, data are revealed online and they are often spread across a distributed network (e.g sensor networks, hospitals, research centres, etc.). Thus, the cost associated with learning a model on a centralized server can be prohibitive. 
+%Moreover, sharing sensitive online private data to a centralized server might lead to information leakage and thus, it raises data security concerns. 
+
+
+In federated learning, one particular constraint of local computations that one needs to pay attention is the computing capacity/resource at the local level.
+In general, it is desired to perform light-weight and low-complex local computations.
+Many decentralized algorithms have been proposed in online settings that are based on gradient methods (see more in related works). 
+However, these algorithms require projections onto the constraint set that usually involves solving computationally intensive programs.
+Hence, in our work we aim to design competitive, robust algorithms in decentralized online settings and if possible, providing the flexibility to convert them to be projection-free. 
+
+%% projection free
+%As in the offline case, many decentralized algorithms have proposed in online settings that are based on gradient methods (see more in related works). %Section~\ref{sec:related-work} for related works). 
+%However, these algorithms require projections onto the constraint set that usually involves solving computationally intensive programs. Recently, \cite{Zhang:2017} proposed a projection-free algorithm for decentralized online computations that replaces the projection operator with a set of constrained linear optimizations. Their algorithm is inspired from the original online conditional gradient algorithm for centralized setting that requires computation of exact gradients ~\cite{Hazanothers16:Introduction-to-online}. However, computing exact gradients may be prohibitively expensive for moderately sized data and intractable when a closed form does not exist. Thus, in this paper, we focus on the design of decentralized online convex optimization algorithm that is \emph{robust} to stochastic settings. 
+
+\paragraph*{\textbf{Problem setting}} Formally, we are given a convex set $\mathcal{K} \subseteq \mathbb{R}^d$ and a set 
+of agents connected over a network and they are represented by a graph $G = (V, E)$.  Let $n$ denote the number of agents (vertices) in $V$ that is $ n  = |V|$.  %via local communication where each node $i \in V$ can communicate only with its adjacent nodes in $G$
+A fixed neural network structure is shared among the agents.  
+At time $t$, each agent $ i \in V$ updates its own local neural network which yields a prediction $\vect{x}^{t}_{i} \in \mathcal{K}$. 
+Subsequently, a batch of data is revealed exclusively to agent $i$ and from its own batch, a non-convex cost function $f^{t}_{i}: \mathcal{K} \rightarrow \mathbb{R}$
+is induced locally.
+Although each agent $i$ observes only function $f^{t}_{i}$, the cost of agent $i$ is $F^{t}(\vect{x}^{t}_{i})$ where 
+$F^{t}(\cdot) := \frac{1}{n} \sum_{j=1}^{n} f^{t}_{j}(\cdot)$, here $F^{t}$ represents the cost function cumulated on all the batches.
+The objective is to minimize the total cost via local communication where each agent $i \in V$ can only communicate 
+with its immediate neighbours, i.e., adjacent agents in $G$.  
+
+When the cost functions are convex, a typical measure is the \emph{regret} notion. 
+An online algorithm is \emph{$R(T)$-regret} if for every agent $1 \leq i \leq n$, 
+%%
+\begin{align*}
+\frac{1}{T} \biggl( \sum_{t = 1}^T F^t(\vect{x}^t_i) - \min_{\vect{o} \in \mathcal{K}} \sum_{t=1}^T F^t(\vect{o}) \biggr) \leq R(T)
+\end{align*}
+%
+%%
+%Intuitively, we look for an algorithm where every agent, with only local information exchange, 
+%has a regret $R(T) = o(T)$ compared to the best solution in hindsight which has the full information 
+%over all functions $f^{t}_{i}$ for $1 \leq i \leq n$ at every time $t$.
+%%
+%\begin{comment}
+%However, in this work, we are interested in optimizing neural networks which are not convex functions.
+%Therefore making the analysis of regret weaker since one cannot always make sure to converge to the best solution even in the offline setting. For gradient based algorithms within offline non-convex settings, a different notion is well studied, namely the duality gap. If an optimizing algorithm has its duality gap converging to $0$ then it at least converges to a local minimum or a saddle point. This notion can be extended to online settings with the following expression ... 
+%
+%Therefore, we want to conceive an algorithm with an online duality gap that converges to $0$.
+%\end{comment}
+%%
+
+As the cost functions in the paper are non-convex, we consider a stationary measure on the quality of 
+solution based on the Frank-Wolfe gap \cite{Jaggi:2013,lacostejulien:2016} and that can be considered as the counter-part of the regret in 
+the non-convex setting. Specifically, we aim to bound the following terms, namely \emph{convergence gap}, for every agent $1 \leq i \leq n$:
+% 
+\begin{align}	\label{eq:gap_def}
+%    \mathcal{G}(\vect{x}) = \max_{\vect{o}^{\prime} \in \mathcal{K}}\langle \nabla F^{t}(\vect{x}), \vect{x} - \vect{o}^{\prime}\rangle = \langle \nabla F^{t}(\vect{x}), \vect{x} - \vect{o}\rangle
+    \max_{\vect{o} \in \mathcal{K}} \frac{1}{T} \sum_{t=1}^{T} \langle \nabla F^{t}(\vect{x}^{t}_{i}), \vect{x}^{t}_{i} - \vect{o}\rangle 
+    \end{align}
+% 
+In the same spirit as the regret, the measure of convergence gap is defined compared to the stationary points in hindsight. 
+Note that when functions $F^{t}$ are convex, the convergence gap is always upper bounded by the regret. 
+Moreover, when the problem becomes offline, i.e., all $F^{t}$ are the same, the convergence gap measures the speed of convergence to a stationary solution.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Our contribution}
+
+As a starting point, we consider the Meta Frank-Wolfe (MFW) algorithm~\cite{ChenHassani18:Online-continuous} in the (centralized, convex) online setting and the Decentralized Frank-Wolfe (DFW) algorithm \cite{WaiLafond17:Decentralized-Frank--Wolfe} in the decentralized (offline) setting. However, these algorithms work either in the online setting or in the decentralized one but not both together. The challenge in designing robust and efficient algorithms in both settings relies not only on the difficulty due to the uncertainty (online setting) and the partial information (decentralized setting) but also on the non-convex nature of the loss functions. 
+
+Building on MFW and DFW algorithms together with a subtle analysis, 
+we present an algorithm that achieves the convergence gap of $O(T^{-1/2})$ (see Theorem~\ref{thm:gap} for the detail parameter dependency). 
+The convergence gap of $O(T^{-1/2})$ asymptotically matches to the best regret guarantee even in the centralized offline settings with convex functions. Moreover, we show that our algorithm can be extended to capture the setting in which only stochastic gradients are available (instead of exact gradients). 
+
+Our work applies in the context of online neural network optimization amongst a group of autonomous learners.
+We demonstrate the practical utility of our algorithm in a smart building application where zones mimic learners optimizing a temperature forecasting problem.
+We provide a thorough analysis of our algorithms in different angles of the performance guarantee (quality of solutions), the effects of network topology and decentralization, which are predictably explained by our theoretical results.
+

@@ -1,0 +1,341 @@
+\section{Conditional Gradient based Algorithm}
+\label{chap:formulation}
+
+In this section, We first give an algorithm for the setting with exact gradients. Subsequently, we extend our algorithm to capture the more realistic setting with stochastic gradients. 
+
+\subsection{An Algorithm with Exact Gradients}
+\label{sec:exact}
+
+
+We first describe informally the main ideas of the algorithm. In the algorithm, at every time $t$, each agent $i$ executes $L$ steps of the Frank-Wolfe algorithm 
+where every update vector (for iterations $1 \leq \ell \leq L$) is constructed by 
+combining the outputs of linear optimization oracles $\mathcal{O}_{j,\ell}$
+and the current vectors of its neighbors $j \in N(i)$.  
+The solution $\vect{x}_{i}^{t}$ for each agent/node $1 \leq i \leq n$ is chosen uniformly random among $\{\vect{x}_{i,\ell}^{t}: 1 \leq \ell \leq L\}$.
+Subsequently, after aggregating the information related to functions $f_{j}^{t}$
+for $j \in N(i)$, the algorithm subtly computes a vector $\vect{d}^{t}_{i,\ell}$ and feedbacks  
+$\langle \vect{d}^t_{i,\ell}, \cdot \rangle$ as the reward function at time $t$ to the oracle $\mathcal{O}_{i,\ell}$ for $1 \leq \ell \leq L$.
+The formal description is given in Algorithm~\ref{algo:online-dist-FW}.
+
+
+\begin{algorithm}[ht]
+\begin{flushleft}
+\textbf{Input}:  A convex set $\mathcal{K}$, 
+	a time horizon $T$, a parameter $L$, online linear optimization oracles $\mathcal{O}_{i,1}, \ldots, \mathcal{O}_{i,L}$ for each player $1 \leq i \leq n$, 
+	step sizes $\eta_\ell \in (0, 1)$ for all $1 \leq \ell \leq L$
+\end{flushleft}
+\begin{algorithmic}[1]
+\STATE Initialize linear optimizing oracle $\mathcal{O}_{i,\ell}$ for all $1 \leq \ell \leq L$
+\FOR {$t = 1$ to $T$}	 		
+	\FOR{every agent $1 \leq i \leq n$}	%
+		\STATE Initialize arbitrarily $\vect{x}^t_{i,1} \in \mathcal{K}$ 
+		\FOR{$1 \leq \ell \leq L$}
+			\STATE Let $\vect{v}^{t}_{i,\ell}$ be the output of oracle $\mathcal{O}_{i,\ell}$ at time step $t$.
+			\STATE Send $\vect{x}^{t}_{i,\ell}$ to all neighbours $N(i)$
+			\STATE \label{alg:y} 
+				Once receiving $\vect{x}^{t}_{j,\ell}$ from all neighbours $j \in N(i)$, 
+				set $\vect{y}^{t}_{i,\ell} \gets \sum_{j} W_{ij} \vect{x}^{t}_{j,\ell}$.
+			\STATE \label{alg:x} Compute $\vect{x}^{t}_{i,\ell+1} \gets (1 - \eta_{\ell}) \vect{y}^{t}_{i,\ell} + \eta_{\ell} \vect{v}^{t}_{i,\ell}$.
+		\ENDFOR
+		%
+		\STATE Choose $\vect{x}^{t}_{i} \gets \vect{x}^{t}_{i,\ell}$ for $1 \leq \ell \leq L$ with probability $\frac{1}{L}$ and play $\vect{x}^t_{i}$
+		\STATE Receive function $f^{t}_{i}$ %and get the cost of $F^{t}(\vect{x}^t_{i})$. 
+		\STATE Set $\vect{g}^{t}_{i,1} \gets \nabla f^{t}_{i}(\vect{x}^{t}_{i,1})$
+			\FOR{$1 \leq \ell \leq L$}
+				\STATE Send $\vect{g}^{t}_{i,\ell}$ to all neighbours $N(i)$.
+				\STATE After receiving $\vect{g}^{t}_{j,\ell}$ from all neighbours $j \in N(i)$, compute
+					$\vect{d}^{t}_{i,\ell} \gets  \sum_{j \in N(i)} W_{ij} \vect{g}^{t}_{j,\ell}$
+					and
+					$\vect{g}^{t}_{i,\ell + 1} \gets \bigl( \nabla f^{t}_{i}(\vect{x}^t_{i,\ell+1}) 
+						-  \nabla f^{t}_{i}(\vect{x}^{t}_{i,\ell}) \bigr) + \vect{d}^{t}_{i,\ell}$.
+				\STATE Feedback function $\langle \vect{d}^{t}_{i,\ell}, \cdot \rangle$ 
+				to oracles $\mathcal{O}_{i,\ell}$. (The cost of the oracle $\mathcal{O}_{i,\ell}$ at time $t$ is 
+				$\langle \vect{d}^{t}_{i,\ell}, \vect{v}^{t}_{i,\ell}  \rangle$.)
+			\ENDFOR
+		%
+	\ENDFOR
+\ENDFOR
+\end{algorithmic}
+\caption{Decentralized online algorithm}
+\label{algo:online-dist-FW}
+\end{algorithm}
+
+\textbf{Analysis.}
+In the analysis, denote $\overline{\vect{x}}^{t}_{\ell} := \frac{1}{n} \sum_{j=1}^{n} \vect{x}^{t}_{j,\ell}$,
+%and $F^{t}_{\ell} := \frac{1}{n} \sum_{j=1}^{n} f^{t}_{j}(\vect{y}^{t}_{j,\ell})$. 
+we make use of the following 
+lemma.
+
+\begin{lemma}[\cite{WaiLafond17:Decentralized-Frank--Wolfe}, Lemmas 1 and 2]	\label{lem:convergence}
+Assume that functions $f^{t}_{j}$'s are $\beta$-smooth, G-Lipschitz that is, $\| \nabla f^{t}_{j}\|  \leq G$
+for every $1 \leq t \leq T$ and every $1 \leq j \leq n$ and the diameter of $\mathcal{K}$ is $D$.
+Then, there exists a constant $\ell_{0}$ such that for every $1 \leq \ell \leq L+1$, 
+\begin{linenomath}
+\begin{align*}
+	\Delta p_{\ell} := \max_{t=1}^{T} \max_{i = 1}^{n} \| \vect{y}^{t}_{i,\ell} - \overline{\vect{x}}^{t}_{\ell} \| 
+		&\leq \frac{C_{p}}{\ell} 
+\end{align*}
+\begin{align*}
+	\Delta d_{\ell} := \max_{t=1}^{T} \max_{i = 1}^{n} \| \vect{d}^{t}_{i,\ell} - \frac{1}{n}\sum_{j=1}^n \nabla f^t_j (\vect{y}^t_{j,\ell})  \| 
+		&\leq \frac{C_{d}}{\ell}
+\end{align*}
+\end{linenomath}
+where 
+$C_{p}=\ell_{0}\sqrt{n} D$ and $C_{d}=\sqrt{n} \cdot \max $ $\left \{ 2 \left ( \frac{\ell_{0} \sqrt{n} D}{\ell} +D \right )\beta ;
+|\lambda_{2}(W)| \ell_{0} \left ( \frac{\beta D}{1 - |\lambda_{2}(W)|}+ G \right) \right\}
+$ where $\lambda_2(W)$ is the second largest eigenvalue of $W$.
+\end{lemma}
+
+
+In order to bound the Frank-Wolfe gap for each individual node, we consider the \emph{average} Frank-Wolfe gap, 
+which is defined at every time $1 \leq t \leq T$ and for every iteration $1 \leq \ell \leq L$ as 
+\begin{equation}
+ \mathcal{G}^t_{\ell} := \max_{\vect{o} \in \mathcal{K}}\langle \nabla F(\overline{\vect{x}}^t_{\ell}), \overline{\vect{x}}^t_{\ell} - \vect{o}\rangle = \langle \nabla F(\overline{\vect{x}}^t_{\ell}), \overline{\vect{x}}^t_{\ell} - \vect{o}^t_{\ell}\rangle
+\end{equation} 
+where $\vect{o}^t_{\ell} = \argmin_{\vect{o} \in \mathcal{K}}\langle \nabla F(\overline{\vect{x}}^t_{\ell}), \vect{o} \rangle$.
+
+\begin{lemma}
+\label{lemma:final_step}
+For all $1 \leq i \leq n$, for every iteration $1 \leq \ell \leq L$, it holds that
+\begin{align*}
+    & \max_{\vect{o} \in \mathcal{K}}\langle \nabla F_t (\vect{x}^t_{i,\ell}), \vect{x}^t_{i,\ell} - \vect{o} \rangle  \\
+    & \leq \max_{\vect{o} \in \mathcal{K}}\langle \nabla F_t (\overline{\vect{x}}^t_{\ell}), \overline{\vect{x}}^t_{\ell} - \vect{o} \rangle
+    + \left(\beta D + G \right)C_p \frac{\log L}{L}.
+\end{align*}
+\end{lemma}
+
+\begin{theorem}
+\label{thm:gap}
+Let $\mathcal{K}$ be a convex set with diameter D. Assume that functions $F^{t}$ (possibly non convex) are $\beta$-smooth and G-Lipschitz for every t. With the choice of step size $\eta_{\ell} = \min\left(1, \frac{A}{\ell^{\alpha}}\right)$ where $A \geq 0$ and $\alpha \in (0,1)$. 
+Then, Algorithm 1 guarantees that for all $1 \leq i \leq n$:
+%
+    \begin{align*}
+       \max_{\vect{o} \in \mathcal{K}}\frac{1}{T} &\sum_{t=1}^{T} \E_{\vect{x}^t_i} \bigl [\langle \nabla F^{t}(\vect{x}^t_{i}), \vect{x}^t_{i} - \vect{o}\rangle \bigr] \nonumber \\
+       &\leq \frac{GDA^{-1}}{L^{1-\alpha}}  
+         + \frac{AD^2 \beta/2}{L^{\alpha}(1-\alpha)} + O \left(\mathcal{R}^{T}\right) \notag \\
+        & \quad + \left(\left( \beta C_p + C_d \right)D + \left(\beta D + G \right)C_p \right)\frac{\log L}{L}
+    \end{align*}
+where $\mathcal{R}^T$ is the regret of online linear minimization oracles.
+Choosing $L=T$, $\alpha = 1/2$ and oracles as gradient descent or follow-the-perturbed-leader with regret $\mathcal{R}^T =
+O\bigl(T^{-1/2}\bigr)$, we obtain the gap convergence rate of $O\bigl(T^{-1/2}\bigr)$.
+\end{theorem}
+%
+\begin{proof}
+By $\beta$-smoothness, $\forall \ell \in \{1, \cdots, L\}$: 
+%
+\begin{align}	\label{tk:smth}
+    &F^{t}\left( \overline{\vect{x}}^{t}_{\ell+1} \right) - F^{t} \left( \overline{\vect{x}}^{t}_{\ell} \right)  \notag \\
+    &\leq \langle \nabla F^{t} \left( \overline{\vect{x}}^t_{\ell} \right), \overline{\vect{x}}^t_{\ell+1} - \overline{\vect{x}}^t_{\ell} \rangle 
+    	+ \frac{\beta}{2} \left \| \overline{\vect{x}}^t_{\ell+1} - \overline{\vect{x}}^t_{\ell} \right\|^{2}
+\end{align} 
+
+Using Lemma~\ref{lmm:avg}, the inner product in~(\ref{tk:smth}) can be re-written as : 
+    \begin{align}	\label{tk:inner_beta}
+        & \left \langle \nabla F^{t} \left( \overline{\vect{x}}^t_{\ell} \right), \overline{\vect{x}}^t_{\ell+1} - \overline{\vect{x}}^t_{\ell} \right \rangle 	\notag \\
+        & = \eta_{\ell} \left \langle \nabla F^{t} \left( \overline{\vect{x}}^t_{\ell} \right), \frac{1}{n}\sum_{i=1}^{n} \vect{v}^t_{i,\ell} - \overline{\vect{x}}^t_{\ell} \right \rangle 	\notag \\
+        &= \eta_{\ell} \left \langle \nabla F^{t} \left( \overline{\vect{x}}^t_{\ell} \right),  \frac{1}{n} \biggl(\sum_{i=1}^{n} \vect{v}^t_{i,\ell} - n \cdot \overline{\vect{x}}^t_{\ell} \biggr) \right \rangle 	\notag \\
+        &=  \frac{\eta_{\ell}}{n}\sum_{i=1}^{n} \left \langle \nabla F^{t} \left( \overline{\vect{x}}^t_{\ell} \right), \vect{v}^t_{i,\ell} - \overline{\vect{x}}^t_{\ell} \right \rangle
+    \end{align}
+
+Let $\vect{o}^t_{\ell}$ be such that 
+$
+        \vect{o}^t_{\ell} \in \argmin_{\vect{o} \in \mathcal{K}}\langle \nabla F(\overline{\vect{x}}^t_{\ell}),\vect{o} \rangle
+$. Hence, 
+    \begin{align*}
+     \mathcal{G}^t_{\ell} 
+     = \max_{\vect{o} \in \mathcal{K}}\langle \nabla F(\overline{\vect{x}}^t_{\ell}), \overline{\vect{x}}^t_{\ell} - \vect{o}\rangle 
+     = \langle \nabla F(\overline{\vect{x}}^t_{\ell}), \overline{\vect{x}}^t_{\ell} - \vect{o}^t_{\ell}\rangle
+    \end{align*} 
+%
+We have :
+    \begin{align*}
+        &\left \langle \nabla F^{t} \left( \overline{\vect{x}}^t_{\ell} \right) , \vect{v}^t_{i,\ell} - \overline{\vect{x}}^t_{\ell} \right \rangle \\
+        %
+        & =\langle \nabla F^{t} \left( \overline{\vect{x}}^t_{\ell} \right) - \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{o}^t_{\ell} \rangle \\
+         	& \qquad + \langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{o}^t_{\ell} \rangle \\
+         	& \qquad + \langle \nabla F^{t} \left( \overline{\vect{x}}^t_{\ell} \right), \vect{o}^t_{\ell} - \overline{\vect{x}}^t_{\ell} \rangle \\
+	%
+        &\leq \|\nabla F^{t} \left(\overline{\vect{x}}^t_{\ell} \right) - \vect{d}^t_{i, \ell} \| \|\vect{v}^t_{i,\ell} - \vect{o}^t_{\ell}\| \\
+        		 & \qquad + \langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{o}^t_{\ell} \rangle \\
+         	& \qquad + \langle \nabla F^{t} \left( \overline{\vect{x}}^t_{\ell} \right), \vect{o}^t_{\ell} - \overline{\vect{x}}^t_{\ell} \rangle \\
+	%
+         & \leq \|\nabla F^{t} \left(\overline{\vect{x}}^t_{\ell} \right) - \vect{d}^t_{i, \ell} \|D + \langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{o}^t_{\ell} \rangle \\
+         	& \qquad+ \langle \nabla F^{t} \left( \overline{\vect{x}}^t_{\ell} \right), \vect{o}^t_{\ell} - \overline{\vect{x}}^t_{\ell} \rangle. 
+    \end{align*}
+where we use Cauchy-Schwarz in the first inequality.  
+Using Lemma~\ref{lem:convergence} and $\beta$-smoothness of $F^t$,
+%
+    \begin{align*}
+        &\left\| \nabla F^{t} \left(\overline{\vect{x}}^t_{\ell} \right) - \vect{d}^t_{i, \ell} \right\| \\
+        %
+        & \leq \| \nabla F^{t} \left(\overline{\vect{x}}^t_{\ell} \right) - \frac{1}{n}\sum_{i=1}^n \nabla f^t_i (\vect{y}^t_{i,\ell}) \| \\
+        		& \qquad + \lVert\frac{1}{n}\sum_{i=1}^n \nabla f^t_i (\vect{y}^t_{i,\ell}) - \vect{d}^t_{i, \ell} \lVert \\
+	%
+        & \leq \| \frac{1}{n}\sum_{i=1}^n \nabla f^{t}_{i} \left(\overline{\vect{x}}^t_{\ell} \right) - \frac{1}{n}\sum_{i=1}^n \nabla f^t_i (\vect{y}^t_{i,\ell}) \| \\
+        		&\qquad + \lVert\frac{1}{n}\sum_{i=1}^n \nabla f^t_i (\vect{y}^t_{i,\ell}) - \vect{d}^t_{i, \ell} \lVert \\
+	%
+        & \leq  \frac{1}{n}\sum_{i=1}^n \|\nabla f^{t}_{i} \left(\overline{\vect{x}}^t_{\ell} \right) -  \nabla f^t_i (\vect{y}^t_{i,\ell}) \| \\
+        		 &\qquad + \lVert\frac{1}{n}\sum_{i=1}^n \nabla f^t_i (\vect{y}^t_{i,\ell}) - \vect{d}^t_{i, \ell} \lVert \\
+	%
+        & \leq \frac{\beta}{n} \sum_{i=1}^n \| \overline{\vect{x}}^t_{\ell} - \vect{y}^t_{i, \ell} \| \tag{by $\beta$ smoothness} \\
+        		& \qquad + \|\frac{1}{n}\sum_{i=1}^n \nabla f^t_i (\vect{y}^t_{i,\ell}) - \vect{d}^t_{i, \ell} \| \\
+        & \leq \frac{\beta C_p + C_d}{\ell}  \tag{by Lemma \ref{lem:convergence}}
+    \end{align*}
+%
+Thus,
+    \begin{align*}
+        & \left \langle \nabla F^{t} \left( \overline{\vect{x}}^t_{\ell} \right) , \vect{v}^t_{i,\ell} - \overline{\vect{x}}^t_{\ell} \right \rangle \\
+        & \leq \left( \frac{\beta C_p + C_d}{\ell}\right)D + \langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{o}^t_{\ell} \rangle - \mathcal{G}^t_{\ell} 
+    \end{align*}
+
+
+Upper bound  the right hand side of~(\ref{tk:inner_beta}) by the above inequality, we have :
+%
+    \begin{align}	\label{tk:inner_beta2}
+        &\left \langle \nabla F^{t} \left( \overline{\vect{x}}^t_{\ell} \right), \overline{\vect{x}}^t_{\ell+1} - \overline{\vect{x}}^t_{\ell} \right \rangle \notag \\
+         &\leq \eta_{\ell}\frac{\left( \beta C_p + C_d\right)D }{\ell}
+          +  \frac{\eta_{\ell}}{n} \sum_{i=1}^{n}\langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{o}^t_{\ell} \rangle - \eta_{\ell}\mathcal{G}^t_{\ell} 
+    \end{align}
+%
+Combining~(\ref{tk:smth}) with~(\ref{tk:inner_beta2}) and re-arrange the terms, as $\eta_{\ell} = \frac{A}{\ell^{\alpha}}$, we have : 
+    \begin{align}	\label{tk:gap_eta_ell}
+         \eta_{\ell} \mathcal{G}^t_{\ell} 
+         %
+        & \leq F^{t} \left( \overline{\vect{x}}^t_{\ell} \right) - F^{t} \left( \overline{\vect{x}}^t_{\ell+1} \right) + \eta_{\ell} \frac{(\beta C_p + C_d)D}{\ell} \notag \\
+        & \quad + \frac{\eta_{\ell}}{n} \sum_{i=1}^{n}\langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{a}^t_{\ell} \rangle + \eta^2_{\ell}D^2 \frac{\beta}{2} 
+    \end{align}
+%
+Dividing by $\eta_{\ell}$ yields :
+%
+    \begin{align}	\label{tk:gap_ell}
+        \mathcal{G}^t_{\ell} 
+        %
+        %& \leq \frac{\ell^{\alpha}}{A} \left( F^{t} \left( \overline{\vect{x}}^t_{\ell} \right) - F^{t} \left( \overline{\vect{x}}^t_{\ell+1} \right) \right) + \frac{(\beta C_p + C_d)D}{\ell} \notag \\
+        %& \quad + \frac{1}{n} \sum_{i=1}^{n}\langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{o}^t_{\ell} \rangle + \eta_{\ell}D^2 \frac{\beta}{2} \notag \\
+        & \leq \frac{L^{\alpha}}{A} \left( F^{t} \left( \overline{\vect{x}}^t_{\ell} \right) - F^{t} \left( \overline{\vect{x}}^t_{\ell+1} \right) \right) + \frac{(\beta C_p + C_d)D}{\ell} \notag \\
+        & \quad + \frac{1}{n} \sum_{i=1}^{n}\langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{o}^t_{\ell} \rangle + \eta_{\ell}D^2 \frac{\beta}{2}
+    \end{align}
+%
+Let $\mathcal{G}^t$ be a random variable such that $\mathcal{G}^t = \mathcal{G}^t_{\ell}$ with probability $\frac{1}{L}$. 
+We are now bounding $\E_{\overline{\vect{x}}^t} \left[ \mathcal{G}^t \right]$.
+By Inequality (\ref{tk:gap_ell}), using the definition of $\eta_{\ell} = \frac{A}{\ell^{\alpha}}$, $G$-Lipschitz property of $F$, we have (detail shown in 
+% Appendix)
+\cite{anonymous_2021_5572198})
+%
+    \begin{align}		\label{tk:exp_gap}
+        \E_{\overline{\vect{x}}^t} \left[ \mathcal{G}^t \right] 
+        %& = \frac{1}{L} \sum_{\ell=1}^{L} \mathcal{G}^t_{\ell} \\
+        & \leq \frac{GDA^{-1}}{L^{1-\alpha}} \notag 
+        		+ \left( \beta C_p + C_d \right)D\frac{\log L}{L} \notag \\
+        		& \quad + \frac{1}{nL}\sum_{\ell=1}^{L}\sum_{i=1}^{n}\langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{o}^t_{\ell} \rangle \notag \\
+        		& \quad + \frac{AD^2 \beta/2}{L^{\alpha}(1-\alpha)}
+    \end{align}
+%
+Summing the above inequality for $1 \leq t \leq T$ and
+note that $\frac{1}{T}\sum_{t=1}^{T}\langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{o}^t_{\ell} \rangle$ 
+is the regret of the oracle $\mathcal{O}_{i}$, we get
+%
+    \begin{align}		\label{tk:case1_finalbound}
+        \frac{1}{T}\sum_{t=1}^{T} \E_{\overline{\vect{x}}^t} \bigl[\mathcal{G}^t]  
+         & \leq \frac{GDA^{-1}}{L^{1-\alpha}} + O \left(\mathcal{R}^{T}\right) \notag \\
+        & \quad + \left( \beta C_p + C_d \right)D\frac{\log L}{L} \notag \\
+        & \quad + \frac{AD^2 \beta/2}{L^{\alpha}(1-\alpha)}
+    \end{align} 
+%    
+By uniformly random choice of $\vect{x}^{t}_{i}$ (over all $\vect{x}^{t}_{i,\ell}$ for $1 \leq \ell \leq L$) in the algorithm, we have (detail shown in
+% Appendix )
+\cite{anonymous_2021_5572198})
+\begin{align}	\label{tk:connection}
+\frac{1}{T}\sum_{t=1}^{T} &\E_{\vect{x}^t_i} \bigl [ \max_{\vect{o} \in \mathcal{K}}\langle \nabla F^{t}(\vect{x}^t_{i}), \vect{x}^t_{i} - \vect{o}\rangle \bigr] \notag \\
+%\max_{\vect{o}^{\prime} \in \mathcal{K}} \frac{1}{T} &\sum_{t=1}^{T} \E_{\vect{x}^t_i} \bigl [\langle \nabla F^{t}(\vect{x}^t_{i}), \vect{x}^t_{i} - \vect{o}^{\prime}\rangle \bigr] \\
+%&\leq \frac{1}{T}\sum_{t=1}^{T} \frac{1}{L} \sum_{\ell=1}^{L} \bigl [ \max_{\vect{o} \in \mathcal{K}}\langle \nabla F^{t}(\vect{x}^t_{i,\ell}), \vect{x}^t_{i,\ell} - \vect{o}\rangle \bigr] \notag \\
+%
+%&\leq \frac{1}{T}\sum_{t=1}^{T} \frac{1}{L} \sum_{\ell=1}^{L} \biggl[ \max_{\vect{o} \in \mathcal{K}}
+%		\langle \nabla F^{t} (\overline{\vect{x}}^t_{\ell}), \overline{\vect{x}}^t_{\ell} - \vect{o} \rangle \notag \\
+%		& \qquad +  \left(\beta D + G \right)C_p \frac{\log L}{L}
+%		\biggr]  \notag \\
+& \leq \frac{1}{T}\sum_{t=1}^{T} \E_{\overline{\vect{x}}^t} \left[\mathcal{G}^t\right] +  \left(\beta D + G \right) C_p \frac{\log L}{L}		
+\end{align}
+%where the second inequality is due to Lemma~\ref{lemma:final_step} and the last equality hold since 
+where we have used Lemma~\ref{lemma:final_step} and the fact that
+\begin{align*}
+    \E_{\overline{\vect{x}}^t} \left[\mathcal{G}^t\right] = \E_{\overline{\vect{x}}^t} {\left[\max_{\vect{o} \in \mathcal{K}}\langle \nabla F_t (\overline{\vect{x}}^t_{\ell}), \overline{\vect{x}}^t_{\ell} - \vect{o} \rangle \right]}
+\end{align*}
+By Jensen's inequality, we have :
+    \begin{align} \label{tk:jensen1}
+        \max_{\vect{o} \in \mathcal{K}} \frac{1}{T} &\sum_{t=1}^{T}  \E_{\vect{x}^t_i} \bigl [\langle \nabla F^{t}(\vect{x}^t_{i}), \vect{x}^t_{i} - \vect{o}\rangle \bigr] \notag \\
+        & \leq \frac{1}{T}\sum_{t=1}^{T} \E_{\vect{x}^t_i} \bigl [ \max_{\vect{o} \in \mathcal{K}}\langle \nabla F^{t}(\vect{x}^t_{i}), \vect{x}^t_{i} - \vect{o}\rangle \bigr] 
+    \end{align}
+The theorem follows (\ref{tk:jensen1}), (\ref{tk:connection}) and (\ref{tk:case1_finalbound}) and setting $L=T$. 
+\end{proof}
+
+\subsection{An Algorithm with Stochastic Gradients}
+In this section, we extend the previous algorithm to the setting where one has access only to stochastic estimates of gradients. The new algorithm is similar to \cref{algo:online-dist-FW} but now instead of using exact gradient, we use stochastic gradient estimates. (Note that the stochastic variables are denoted by the same letter as its exact counterpart with an additional tilde symbol). The only difference is the use of variance reduction (line 17) and so the oracle feedback (line 18) in \cref{algo:online-dist-FW-stoc}. 
+
+\begin{theorem}
+\label{thm:stoc:version2}
+Let $\mathcal{K}$ be a convex set with diameter $D$. Assume that for every $1 \leq t \leq T$, 
+\begin{enumerate}
+	\item functions $f^{t}_{i}$ are $\beta$-smooth, i.e. $\nabla f^{t}_{i}$ is $\beta$-Lipschitz,  (so $F^{t}$ is $\beta$-smooth);
+	\item $\| \nabla f^{t}_{i}\| \leq G$ (so $\| \nabla F^{t}\| \leq G$);
+	\item the gradient estimates are unbiased with bounded variance $\sigma^{2}$, i.e., 
+		$\E [\widetilde{\nabla} f^{t}_{i}(\vect{x}^{t}_{i,\ell})] = \nabla f^{t}_{i}(\vect{x}^{t}_{i,\ell})$
+		and $\bigl \| \widetilde{\nabla} f^{t}_{i}(\vect{x}^{t}_{i,\ell})] - \nabla f^{t}_{i}(\vect{x}^{t}_{i,\ell}) \bigr \| \leq \sigma$
+		for every $1 \leq i \leq n$ and $1 \leq \ell \leq L$;
+	\item the gradient estimates are $\widetilde{\beta}$-Lipschitz.
+\end{enumerate}
+Then, choosing the step-sizes $\eta_\ell = \min \{1, \frac{A}{\ell^{3/4}}\}$ where $A \in \mathbb{R}_+$. For all $1 \leq i \leq n$, 
+%
+    \begin{align*}
+        \max_{\vect{o} \in \mathcal{K}} \E \Bigl[ \frac{1}{T} &\sum_{t=1}^T \E_{\vect{x}_i^t}\bigl [\langle \nabla F_t\left( \vect{x}_i^t \right), \vect{x}_i^t - \vect{o} \rangle \bigr] \Bigl] \nonumber \\
+        & \leq \frac{DG + 2ADQ^{1/2}}{L^{1/4}}
+            + \frac{2AD^2\beta}{L^{3/4}} \\
+        & \quad +\left[ \left(\beta D + G\right) + \left(\beta C_p + C_d\right)D \right] \frac{\log L }{L}\\ 
+        & \quad + O \left(\mathcal{R}^T \right) 
+    \end{align*}
+Choosing $L=T$ and oracles as gradient descent or follow-the-perturbed-leader with regret $\mathcal{R}^T =
+O\left(T^{-1/2}\right)$, we obtain a convergence rate of $O\left( T^{-1/4} \right).$
+
+\end{theorem}
+
+\begin{algorithm}[ht]
+\begin{flushleft}
+\textbf{Input}:  A convex set $\mathcal{K}$, 
+	a time horizon $T$, a parameter $L$, online linear optimization oracles $\mathcal{O}_{i,1}, \ldots, \mathcal{O}_{i,L}$ for each player $1 \leq i \leq n$, 
+	step sizes $\eta_\ell \in (0, 1)$ for all $1 \leq \ell \leq L$
+\end{flushleft}
+\begin{algorithmic}[1]
+\STATE Initialize linear optimizing oracle $\mathcal{O}_{i,\ell}$ for all $1 \leq \ell \leq L$
+\FOR {$t = 1$ to $T$}	 		
+	\FOR{every agent $1 \leq i \leq n$}	%
+		\STATE Initialize arbitrarily $\vect{x}^t_{i,1} \in \mathcal{K}$ and set $\widetilde{\vect{{a}}}^t_{i,0} \gets \vect{0}$ 
+		\FOR{$1 \leq \ell \leq L$}
+			\STATE Let $\vect{v}^{t}_{i,\ell}$ be the output of oracle $\mathcal{O}_{i,\ell}$ at time step $t$.
+			\STATE Send $\vect{x}^{t}_{i,\ell}$ to all neighbours $N(i)$
+			\STATE \label{alg:y} 
+				Once receiving $\vect{x}^{t}_{j,\ell}$ from all neighbours $j \in N(i)$, 
+				set $\vect{y}^{t}_{i,\ell} \gets \sum_{j} W_{ij} \vect{x}^{t}_{j,\ell}$.
+			\STATE \label{alg:x} Compute $\vect{x}^{t}_{i,\ell+1} \gets (1 - \eta_{\ell}) \vect{y}^{t}_{i,\ell} + \eta_{\ell} \vect{v}^{t}_{i,\ell}$.
+		\ENDFOR
+		%
+		\STATE Choose $\vect{x}^{t}_{i} \gets \vect{x}^{t}_{i,\ell}$ for $1 \leq \ell \leq L$ with probability $\frac{1}{L}$ and play $\vect{x}^t_{i}$
+		\STATE Receive function $f^{t}_{i}$ and an unbiased gradient estimate $\widetilde {\nabla} f^{t}_{i}$
+		%and get the cost of $F^{t}(\vect{x}^t_{i})$. 
+		\STATE Set $\widetilde{\vect{g}}^{t}_{i,1} \gets \widetilde{\nabla} f^{t}_{i}(\vect{x}^{t}_{i,1})$
+			\FOR{$1 \leq \ell \leq L$}
+				\STATE Send $\widetilde{\vect{g}}^{t}_{i,\ell}$ to all neighbours $N(i)$.
+				\STATE After receiving $\widetilde{\vect{g}}^{t}_{j,\ell}$ from all neighbours $j \in N(i)$, compute
+					$\widetilde{\vect{d}}^{t}_{i,\ell} \gets  \sum_{j \in N(i)} W_{ij} \widetilde{\vect{g}}^{t}_{j,\ell}$ and set $\widetilde{\vect{g}}^{t}_{i,\ell + 1} \gets \bigl( \widetilde{\nabla} f^{t}_{i}(\vect{x}^t_{i,\ell+1}) 
+						-  \widetilde{\nabla} f^{t}_{i}(\vect{x}^{t}_{i,\ell}) \bigr) + \widetilde{\vect{d}}^{t}_{i,\ell}$.
+				\STATE $ \widetilde{\vect{a}}^t_{i, \ell} \gets (1 - \rho_\ell) \cdot \widetilde{\vect{a}}^t_{i, \ell-1} + \rho_\ell \cdot \widetilde{\vect{d}}^{t}_{i,\ell}$.
+				\STATE Feedback function $\langle \widetilde{\vect{a}}^{t}_{i,\ell}, \cdot \rangle$ 
+				to oracles $\mathcal{O}_{i,\ell}$. (The cost of the oracle $\mathcal{O}_{i,\ell}$ at time $t$ is 
+				$\langle \widetilde{\vect{a}}^{t}_{i,\ell}, \vect{v}^{t}_{i,\ell}  \rangle$.)
+			\ENDFOR
+		%
+	\ENDFOR
+\ENDFOR
+\end{algorithmic}
+\caption{Stochastic online decentralized algorithm}
+\label{algo:online-dist-FW-stoc}
+\end{algorithm}

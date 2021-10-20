@@ -1,0 +1,33 @@
+\section{Related Work}
+\label{sec: relatedworks}
+
+\paragraph{Decentralized Online Optimization}  %
+%
+Yan et al.~\cite{Yan:2013} introduced distributed online projected subgradient descent and showed vanishing regret for convex and strongly convex functions. 
+In contrast, Hosseini et al.~\cite{Hosseini:2013} extended distributed dual averaging technique to online setting using a general regularized projection for both unconstrained and constrained optimization. 
+A distributed variant of online conditional gradient \cite{Hazanothers16:Introduction-to-online} was designed and analyzed in~\cite{Zhang:2017} that requires linear minimizers and uses exact gradients. 
+However, computing exact gradients may be prohibitively expensive for moderately sized data and intractable when a closed form does not exist. 
+In this work, we go a step ahead in designing a distributed algorithm that uses stochastic gradient estimates and provides a better regret bound than in~\cite{Zhang:2017}.
+
+
+%\paragraph{Incremental learning} Incremental learning is a dynamic machine learning technique. Similarly to online learning, incremental learning's purpose is to adapt to new and unexpected data when having to train learning models with data depended on time or data too large to handle at once. The added focus of incremental learning is to not forget the learning model's existing knowledge. Many recent techniques have been proposed to counter the catastrophic forgetting \cite{wu_large_2019,he_incremental_2020}. Recent studies have been conducted on incremental learning in decentralized settings, for instance in \cite{liang_learning_2021} the focus is put on the efficiency of the communication and in \cite{ye_privacy-preserving_2020} the concern is about privacy preserving properties.
+
+\paragraph{Federated Learning} Our work is along the line of federated learning \cite{McMahanothers:Advances-and-Open,LiSahu20:Federated-learning:} \cite{federatedLearning2017}. 
+In the latter, offline centralized training (a start network where a central server is connected to several devices) is the currently dominant paradigm. 
+However, decentralized training has been shown to be more efficient 
+than centralized one when operating on networks with low bandwidth or high latency \cite{LianZhang17:Can-decentralized-algorithms,HeBian18:Cola:-Decentralized}. 
+In this paper, we consider a further step by studying arbitrary communication network without a central coordinator and the local data (so local cost functions) evolve over time.  
+
+\paragraph{Online machine learning in smart buildings} 
+ 
+Ambience or power consumption data evolving through time in buildings in general is heterogeneous and represents complex spatio-temporal dynamics. 
+Non parametric deep learning models for prediction ~\cite{garg2000smart},    analysis ~\cite{wong2005intelligent}, and control \cite{gupta_energy-efficient_2021} save up on the time to hand-craft complicated or hard to model features.
+This primarily serves as the motivation for selecting non-parametric knowledge representation and train them in an online manner \cite{abdel2019data}. 
+Usually the smart building hardware is distributed across a building and thus represent potential data sources of heterogeneous patterns.
+Experimental evaluation on a smart building dataset show that federated learning \cite{mitra2021impact} can help zonal models perform better in compared to isolated learning.
+In this work, we add a layer of autonomy and privacy by design amongst a group of collaborating learners thereby dropping the dependency of a central mediator for federation.
+
+
+
+ 
+

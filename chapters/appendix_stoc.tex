@@ -1,0 +1,251 @@
+
+%%%%%%%%%%%%%%%%%%%
+
+\subsection{An Algorithm with Stochastic Gradient Estimates}
+
+\setcounter{lemma}{3}
+\begin{lemma}[Lemma 3, \cite{zhang20_quantized:2020}]
+\label{lmm:red_var}
+Let $\{\vect{d}_{\ell}\}_{\ell \geq 1}$ be a sequence of points in $\mathbb{R}^n$ such that $\|\vect{d}_{\ell} - \vect{d}_{\ell-1}\| \leq \dfrac{B}{(\ell +3)^{\alpha}}$ for all $\ell \geq 1$ with fixed constant $B \geq 0$, $\alpha \in (0,1]$. Let $\{ \widetilde{\vect{d}}_{\ell} \}$ be a sequence of random variables such that $\mathbb{E} [\widetilde{\vect{d}}_{\ell}|\mathcal{H}_{\ell-1}] = \vect{d}_{\ell}$ and $\mathbb{E} \left[ \bigl \| \widetilde{\vect{d}}_{\ell} - \vect{d}_{\ell} \bigr \|^2 | \mathcal{H}_{\ell-1} \right] \leq \sigma^2$ for every $\ell \geq 1$, where $\mathcal{H}_{\ell - 1}$ is the history up to $\ell-1$. Let $\{ \widetilde{\vect{a}}_{\ell}\}_{\ell \geq 0}$ be a sequence of random variables defined recursively as  
+\begin{linenomath}
+    \[ \widetilde{\vect{a}}_{\ell} = (1 - \rho_{\ell}) \widetilde{\vect{a}}_{\ell-1} + \rho_{\ell} \widetilde{\vect{d}}_{\ell} \] 
+\end{linenomath}
+%
+for $\ell \geq 1$ where  $\rho_{\ell} = \dfrac{2}{(\ell+3)^{2\alpha/3}}$ and 
+$\widetilde{\vect{a}}_{0}$ is fixed. Then we have 
+
+\begin{equation*}
+        \E{\|\vect{d}_{\ell} - \Tilde{\vect{a}}_{\ell} \|^2} \leq \frac{Q}{(\ell + 4)^{2\alpha/3}}
+\end{equation*}
+where $Q = \max\{4^{2\alpha/3}\|\Tilde{\vect{a}}_0 - \vect{d}_0\|^2, 4\sigma^2 + 2B^2\}$
+\end{lemma}
+
+\setcounter{lemma}{4}
+\begin{lemma}
+Given the assumptions of Theorem~\ref{thm:stoc:version2}, for every $1 \leq t \leq T$, $1 \leq i \leq n$ and $1 \leq \ell \leq L$, it holds that 
+\begin{equation*}
+    \E{\|\Tilde{\vect{d}}^t_{i,\ell} - \vect{d}^t_{i,\ell} \|^2} \leq 12\left(\Tilde{\beta}^2 + \beta^2\right) \left(2C_p + AD \right)^2 + \sigma^2
+\end{equation*}
+\end{lemma}
+\begin{proof}
+    Fix an arbitrary time $t$. For any $1 \leq i \leq n$, we have 
+
+\begin{align}	\label{eq:claim-d-1}
+\E & \left[  \| \widetilde{\vect{d}}^t_{i,\ell + 1} - \vect{d}^t_{i,\ell+1} \|^2 \right] 	\notag \\
+%
+&= \E \biggl[ \left \| \widetilde{\nabla} f^{t}_{i}(\vect{x}^{t}_{i,\ell+1}) - \widetilde{\nabla} f^{t}_{i}(\vect{x}^{t}_{i,\ell}) - ( \nabla f^{t}_{i}(\vect{x}^{t}_{i,\ell+1}) - \nabla f^{t}_{i}(\vect{x}^{t}_{i,\ell}) )+   (\widetilde{\vect{d}}^t_{i,\ell} - \vect{d}^t_{i,\ell}) \right \|^2 \biggr] 	\notag \\
+%
+&= \E \biggl[ \left \| \widetilde{\nabla} f^{t}_{i}(\vect{x}^{t}_{i,\ell+1}) - \widetilde{\nabla} f^{t}_{i}(\vect{x}^{t}_{i,\ell}) - ( \nabla f^{t}_{i}(\vect{x}^{t}_{i,\ell+1})  - \nabla f^{t}_{i}(\vect{x}^{t}_{i,\ell}) ) \right \|^{2} +   \left  \| \widetilde{\vect{d}}^t_{i,\ell} - \vect{d}^t_{i,\ell} \right \|^2 \biggr] 	\notag \\
+%
+&\leq \E \biggl[ 4 \bigl( \| \widetilde{\nabla} f^{t}_{i}(\vect{x}^{t}_{i,\ell+1}) - \widetilde{\nabla} f^{t}_{i}(\vect{x}^{t}_{i,\ell}) \|^{2}
+	+ \| \nabla f^{t}_{i}(\vect{x}^{t}_{i,\ell+1})  - \nabla f^{t}_{i}(\vect{x}^{t}_{i,\ell}) \|^{2} \bigr)
+	+ \left  \| \widetilde{\vect{d}}^t_{i,\ell} - \vect{d}^t_{i,\ell} \right \|^2 \biggr]	\notag \\
+%
+&\leq \E \biggl [4 (\widetilde{\beta}^{2} + \beta^{2}) \| \vect{x}^{t}_{i,\ell+1} - \vect{x}^{t}_{i,\ell}\|^{2}
+	+  \left  \| \widetilde{\vect{d}}^t_{i,\ell} - \vect{d}^t_{i,\ell} \right \|^2 \biggr]
+%
+\end{align}
+
+The second equality holds since 
+$\E \bigl[ \widetilde{\nabla} f^{t}_{i}(\vect{x}^{t}_{i,\ell+1}) - \widetilde{\nabla} f^{t}_{i}(\vect{x}^{t}_{i,\ell}) - ( \nabla f^{t}_{i}(\vect{x}^{t}_{i,\ell+1})  - \nabla f^{t}_{i}(\vect{x}^{t}_{i,\ell}) ) \bigr ] = 0$. 
+The first inequality follows the fact that $\|\vect{a} + \vect{b}\|^{2} \leq 4 ( \| \vect{a} \|^{2} + \| \vect{b} \|^{2}) $.
+The last inequality is due to the $\beta$-Lipschitz and $\widetilde{\nabla}$-Lipschitz of $\nabla f^{t}_{i}$ 
+and $ \widetilde{\nabla} f^{t}_{i}$, respectively.
+
+%
+Moreover, 
+
+\begin{align}	
+\| \vect{x}^{t}_{i,\ell+1} - \vect{x}^{t}_{i,\ell}\| 
+&\leq \| \vect{x}^{t}_{i,\ell+1} - \overline{\vect{x}}^{t}_{\ell+1} \| +  \| \overline{\vect{x}}^{t}_{\ell+1} - \overline{\vect{x}}^{t}_{\ell} \|
+	+ \| \overline{\vect{x}}^{t}_{\ell} - \vect{x}^{t}_{i,\ell} \|	\notag \\
+&\leq \frac{2C_{p}}{\ell} 
+	+ \| \overline{\vect{x}}^{t}_{\ell+1} - \overline{\vect{x}}^{t}_{\ell} \|  \tag{by Lemma~\ref{lem:convergence}} \\
+&= \frac{2C_{p}}{\ell} 
+	+ \eta_{\ell} \biggl \| \frac{1}{n} \sum_{j=1}^{n} \vect{v}^{t}_{j,\ell} - \overline{\vect{x}}^{t}_{\ell} \biggr \|
+ 		\tag{by Lemma~\ref{lmm:avg}} \\
+&\leq \frac{2C_{p}}{\ell} + \eta_{\ell} D \\
+%
+&\leq \frac{2C_{p} + AD}{\ell^{3/4}}	\label{eq:claim-d-2}
+\end{align}
+
+where in the last inequality, $ \bigl \| \frac{1}{n} \sum_{j=1}^{n} \vect{v}^{t}_{j,\ell} - \overline{\vect{x}}^{t}_{\ell} \bigr \| \leq D$ 
+for every $t,\ell$ since both $\frac{1}{n} \sum_{j=1}^{n} \vect{v}^{t}_{j,\ell}$ and $\overline{\vect{x}}^{t}_{\ell}$ are in $\mathcal{K}$. 
+Therefore, combining (\ref{eq:claim-d-1}) and (\ref{eq:claim-d-2}), we get 
+
+\begin{align}	\label{eq:claim-d-rec}
+\E \left[  \| \widetilde{\vect{d}}^t_{i,\ell + 1} - \vect{d}^t_{i,\ell+1} \|^2 \right] 
+\leq 4 (\widetilde{\beta}^{2} + \beta^{2}) \frac{(2C_{p} + AD)^{2}}{\ell^{3/2}}
+	+  \left  \| \widetilde{\vect{d}}^t_{i,\ell} - \vect{d}^t_{i,\ell} \right \|^2 
+\end{align}
+
+Applying (\ref{eq:claim-d-rec}) recursively on $\ell$, we deduce that
+
+\begin{align*}
+\E \left[  \| \widetilde{\vect{d}}^t_{i,\ell + 1} - \vect{d}^t_{i,\ell+1} \|^2 \right] 
+&\leq 4 (\widetilde{\beta}^{2} + \beta^{2})(2C_{p} + AD)^{2} \sum_{l=1}^{\ell} \frac{1}{l^{3/2}}
+	+  \left  \| \widetilde{\vect{d}}^t_{i,1} - \vect{d}^t_{i,1} \right \|^2 \\
+&\leq 12 (\widetilde{\beta}^{2} + \beta^{2})(2C_{p} + AD)^{2}
+	+  \left  \| \widetilde{\vect{d}}^t_{i,1} - \vect{d}^t_{i,1} \right \|^2
+\end{align*}
+
+since $ \sum_{l=1}^{\ell} \frac{1}{l^{3/2}}  \leq 3$.
+Besides, for any $1 \leq i \leq n$
+
+\begin{align*}
+\E \left[  \| \widetilde{\vect{d}}^t_{i,1} - \vect{d}^t_{i,1} \|^2 \right] 
+&= \E \biggl[  \biggl \|  \sum_{j} W_{ij} (\widetilde{\vect{g}}^t_{j,1} - \vect{g}^t_{j,1}) \biggr \|^2 \biggr] 
+\leq \sum_{j} W_{ij} \E \biggl[  \bigl \|  \widetilde{\vect{g}}^t_{j,1} - \vect{g}^t_{j,1} \bigr \|^2 \biggr] \\
+%
+&= \sum_{j} W_{ij} \E \biggl[  \bigl \|  \widetilde{\nabla} f^{t}_{j}(\vect{x}^{t}_{j,1}) -  \nabla f^{t}_{j}(\vect{x}^{t}_{j,1}) \bigr \|^2 \biggr] 
+\leq \sigma^{2}
+\end{align*}
+
+since $\sum_{j} W_{ij} = 1$. Hence, 
+
+\[
+\E \left[  \| \widetilde{\vect{d}}^t_{i,\ell + 1} - \vect{d}^t_{i,\ell+1} \|^2 \right] 
+\leq  12(\widetilde{\beta}^{2} + \beta^{2})(2C_{p} + AD)^{2} + \sigma^{2}. 
+\]
+
+\end{proof}
+
+\begin{claim}
+It holds that, 
+\begin{equation*}
+    \| \vect{d}^t_{i,\ell+1} - \vect{d}^t_{i, \ell} \| \leq \frac{B}{(\ell+3)^{\alpha}} 
+\end{equation*}
+where $B = 4C_{d} + 2\beta \left[ 2C_{p} + AD \right]$
+\end{claim}
+\begin{proof}
+    \begin{align}
+\norm{\overline{\vect{x}}_{\ell}^{t} - \overline{\vect{x}}_{\ell-1}^{t}} &= \eta_{\ell} \norm{ \left[ \frac{1}{n} \left( \sum_{j=1}^{n} \vect{v}_{j,\ell-1}^{t} \right) \right] - \overline{\vect{x}}_{\ell-1}^{t}} \tag{By Lemma~\ref{lmm:avg}} \nonumber\\
+%
+%
+&\leq \eta_{\ell} D \tag{$\frac{1}{n} \sum_{j=1}^{n} \overline{\vect{v}}_{j,\ell-1}^{t} \in \mathcal{K}$,  $\overline{\vect{x}}_{\ell-1} \in \mathcal{K}$ and $D = \sup_{x,y \in \mathcal{K}^2} \norm{x-y}$ }\nonumber\\
+%
+%
+&= \frac{AD}{\ell}\tag{Definition of $\eta_{\ell} = \frac{A}{\ell}$} \\
+%%%
+\norm{\overline{\vect{x}}_{\ell}^{t} - \overline{\vect{x}}_{\ell-1}^{t}} &\leq \frac{AD}{\ell} \label{eq:distance_xbars}
+\end{align}
+\begin{align}
+\norm{\vect{x}_{j,\ell}^{t} - \vect{x}_{j,\ell-1}^{t}} &\leq \norm{ \vect{x}_{j,\ell}^t-\overline{\vect{x}}_{\ell}^{t}} + \norm{\overline{\vect{x}}_{\ell}^{t}-\overline{\vect{x}}_{\ell-1}^{t}} + \norm{\overline{\vect{x}}_{\ell}^{t}-\vect{x}_{j,\ell-1}^{t}} \tag{Triangle inequality}\\
+%
+%
+&\leq \frac{C_p}{\ell}  + \norm{\overline{\vect{x}}_{\ell}^{t} - \overline{\vect{x}}_{\ell-1}^{t}} + \frac{C_p}{\ell-1} \tag{By Lemma~\ref{lmm:avg}} \\
+%
+%
+&\leq \frac{C_p}{\ell} + \frac{C_p}{\ell-1} + \frac{AD}{\ell} \tag{By equation~\ref{eq:distance_xbars}}\\
+%%%
+\norm{\vect{x}_{j,\ell}^{t} - \vect{x}_{j,\ell-1}^{t}} &\leq \frac{C_p}{\ell} + \frac{C_p}{\ell-1} + \frac{AD}{\ell} \label{eq:xjl-xjl-1}
+\end{align}
+\begin{align}
+\norm{\vect{d}_{i,\ell}^{t} - \vect{d}_{i,\ell-1}^{t}} &\leq \norm{\vect{d}_{i,\ell}^{t} - \nabla F_{\ell}^{t}} + \norm{\nabla F_{\ell}^{t} - \nabla F_{\ell-1}^{t}} +\norm{\nabla F_{\ell-1}^{t} - \vect{d}_{i,\ell-1}^{t}} \tag{Triangle inequality}\\
+%
+%
+&\leq \frac{C_{d}}{\ell} + \norm{\nabla F_{\ell}^{t} - \nabla F_{\ell-1}^{t}} + \frac{C_{d}}{\ell-1} \tag{By Lemma~\ref{lem:convergence}}\\
+%
+%
+&=  \frac{C_{d}}{\ell} + \frac{C_{d}}{\ell-1} + \frac{1}{n} \sum_{j=1}^{n} \norm{\nabla f_{j}^{t}(\vect{x}_{j,\ell}^{t}) - \nabla f_{j}^{t}(\vect{x}_{j,\ell-1}^{t})} \tag{Definition of $\nabla F_{\ell}^{t}$}\\
+%
+%
+&\leq \frac{C_{d}}{\ell} + \frac{C_{d}}{\ell-1} + \frac{\beta}{n} \sum_{j=1}^{n} \norm{\vect{x}_{j,\ell}^{t} - \vect{x}_{j,\ell-1}^{t}} \tag{$f_{j}^{t}$ is $\beta$-smooth}\\
+%
+%
+&\leq \frac{C_{d}}{\ell} + \frac{C_{d}}{\ell-1} + \beta \left[ \frac{C_p}{\ell} + \frac{C_p}{\ell-1} + \frac{AD}{\ell}\right]  \tag{By equation~\ref{eq:xjl-xjl-1}}\\
+%
+%
+&\leq \frac{2C_{d}}{\ell+3} + \frac{2C_{d}}{\ell+3} + \beta \left[ \frac{2C_p}{\ell+3} + \frac{2C_p}{\ell+3} + \frac{2AD}{\ell+3}\right]  \tag{When $\ell \geq 7$}  \\
+%
+%
+&= \frac{4C_{d} + 2\beta \left[ 2C_{p} + AD \right]}{\ell+3}\\
+%
+&\leq \frac{4C_{d} + 2\beta \left[ 2C_{p} + AD \right]}{(\ell+3)^{\alpha}}
+\end{align}
+\end{proof}
+
+\begin{remark}
+\label{rmk:quantized_fw}
+By Lemma \ref{lmm:red_var} and Jensen's inequality, we can deduce the following inequality
+\begin{equation*}
+    \E{\|\vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^t_{i,\ell} \|} \leq \sqrt{\E{\|\vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^t_{i,\ell} \|^{2}}} \leq \frac{Q^{1/2}}{(\ell + 4)^{1/4}}
+\end{equation*}
+\end{remark}
+
+\begin{theorem}
+\label{thm:stoc:version2}
+Let $\mathcal{K}$ be a convex set with diameter $D$. Assume that for every $1 \leq t \leq T$, 
+\begin{enumerate}
+	\item functions $f^{t}_{i}$ are $\beta$-smooth, i.e. $\nabla f^{t}_{i}$ is $\beta$-Lipschitz,  (so $F^{t}$ is $\beta$-smooth);
+	\item $\| \nabla f^{t}_{i}\| \leq G$ (so $\| \nabla F^{t}\| \leq G$);
+	\item the gradient estimates are unbiased with bounded variance $\sigma^{2}$, i.e., 
+		$\E [\widetilde{\nabla} f^{t}_{i}(\vect{x}^{t}_{i,\ell})] = \nabla f^{t}_{i}(\vect{x}^{t}_{i,\ell})$
+		and $\bigl \| \widetilde{\nabla} f^{t}_{i}(\vect{x}^{t}_{i,\ell})] - \nabla f^{t}_{i}(\vect{x}^{t}_{i,\ell}) \bigr \| \leq \sigma$
+		for every $1 \leq i \leq n$ and $1 \leq \ell \leq L$;
+	\item the gradient estimates are $\widetilde{\beta}$-Lipschitz.
+\end{enumerate}
+Then, choosing the step-sizes $\eta_\ell = \min \{1, \frac{A}{\ell^{3/4}}\}$ where $A \in \mathbb{R}_+$. For all $1 \leq i \leq n$, 
+\begin{align*}
+    \max_{\vect{o} \in \mathcal{K}} \E \left[ \frac{1}{T} \sum_{t=1}^T \E_{\vect{x}_i^t}\left[ \langle \nabla F_t\left( \vect{x}_i^t \right), \vect{x}_i^t - \vect{o} \rangle \right] \right]
+    &\leq \frac{DG + 2ADQ^{1/2}}{L^{1/4}} + \frac{2AD^2\beta}{L^{3/4}} \\
+    &+\left[ \left(\beta D + G\right) + \left(\beta C_p + C_d\right)D \right]  \frac{\log L }{L} + O \left(\mathcal{R}^T \right)
+\end{align*}
+Choosing $L=T$ and oracles as gradient descent or follow-the-perturbed-leader with regret $\mathcal{R}^T =
+O\left(T^{-1/2}\right)$, we obtain a convergence rate of $O\left( T^{-1/4} \right).$
+
+\end{theorem}
+
+
+\begin{proof}
+By equation (\ref{tk:exp_gap}) in the proof of Theorem \ref{thm:gap}, we have:
+\begin{align*}
+    \E_{\overline{x}^t}\left[ \mathcal{G}^t \right] 
+    &\leq \frac{DG}{L^{1/4}A} + \frac{(\beta C_p + C_d) D \log L}{L} + \frac{2\beta AD^2}{L^{3/4}} + \frac{1}{nL}\sum_{\ell=1}^{L} \sum_{i=1}^n \langle \vect{d}_{i,\ell}^t, \vect{v}_{i,\ell}^t - \vect{o}_{\ell}^t \rangle\\
+    %
+    &\leq \frac{DG}{L^{1/4}A} + \frac{(\beta C_p + C_d) D \log L}{L} + \frac{2\beta AD^2}{L^{3/4}} + \frac{1}{nL}\sum_{\ell=1}^{L} \sum_{i=1}^n \langle \vect{d}_{i,\ell}^t -\widetilde{\vect{a}}_{i,\ell}^t,\vect{v}_{i,\ell}^t - \vect{o}_{\ell}^t \rangle \\
+     & \quad + \frac{1}{nL}\sum_{\ell=1}^{L} \sum_{i=1}^n \langle \widetilde{\vect{a}}_{i,\ell}^t,\vect{v}_{i,\ell}^t - \vect{o}_{\ell}^t \rangle\\
+    %
+    &\leq \frac{DG}{L^{1/4}A} + \frac{(\beta C_p + C_d) D \log L}{L} + \frac{2\beta AD^2}{L^{3/4}} + \frac{1}{nL}\sum_{\ell=1}^{L} \sum_{i=1}^n \|\vect{d}_{i,\ell}^t -\widetilde{\vect{a}}_{i,\ell}^t\| \| \vect{v}_{i,\ell}^t - \vect{o}_{\ell}^t \| \\
+     & \quad + \frac{1}{nL}\sum_{\ell=1}^{L} \sum_{i=1}^n \langle \widetilde{\vect{a}}_{i,\ell}^t,\vect{v}_{i,\ell}^t - \vect{o}_{\ell}^t \rangle
+     \tag{Cauchy-Schwarz}\\
+    %
+    &\leq \frac{DG}{L^{1/4}A} + \frac{(\beta C_p + C_d) D \log L}{L} + \frac{2\beta AD^2}{L^{3/4}} + \frac{D}{nL}\sum_{\ell=1}^{L} \sum_{i=1}^n \|\vect{d}_{i,\ell}^t -\widetilde{\vect{a}}_{i,\ell}^t\| \\
+     & \quad + \frac{1}{nL}\sum_{\ell=1}^{L} \sum_{i=1}^n \langle \widetilde{\vect{a}}_{i,\ell}^t,\vect{v}_{i,\ell}^t - \vect{o}_{\ell}^t \rangle
+     \tag{$\vect{v}_{i,\ell}^t, \vect{o}_{\ell}^t \in \mathcal{K}^2 \Rightarrow \| \vect{v}_{i,\ell}^t -  \vect{o}_{\ell}^t \| \leq D$}
+\end{align*}
+
+\begin{align*}
+    \E\left[ \frac{1}{T} \sum_{t=1}^T \E_{\overline{x}^t} \left[ \mathcal{G}^t \right] \right]
+    &\leq \frac{DG}{L^{1/4}A} + \frac{(\beta C_p + C_d) D \log L}{L} + \frac{2\beta AD^2}{L^{3/4}} + \frac{D}{nLT}\sum_{\ell=1}^{L} \sum_{i=1}^n \sum_{t=1}^T  \E \left[ \|\vect{d}_{i,\ell}^t -\widetilde{\vect{a}}_{i,\ell}^t\| \right] \\
+     & \quad + \E \left[ \frac{1}{nLT}\sum_{\ell=1}^{L} \sum_{i=1}^n \sum_{t=1}^T \langle \widetilde{\vect{a}}_{i,\ell}^t,\vect{v}_{i,\ell}^t - \vect{o}_{\ell}^t \rangle \right] \\
+     %
+     &\leq \frac{DG}{L^{1/4}A} + \frac{(\beta C_p + C_d) D \log L}{L} + \frac{2\beta AD^2}{L^{3/4}} + \frac{Q^{1/2}D}{L}\sum_{\ell=1}^{L} \frac{1}{(\ell+4)^{1/4}} \\
+     & \quad + \E \left[ \frac{1}{nLT}\sum_{\ell=1}^{L} \sum_{i=1}^n \sum_{t=1}^T \langle \widetilde{\vect{a}}_{i,\ell}^t,\vect{v}_{i,\ell}^t - \vect{o}_{\ell}^t \rangle \right]
+     \tag{By remark \ref{rmk:quantized_fw}}\\
+     %
+     &\leq \frac{DG}{L^{1/4}A} + \frac{(\beta C_p + C_d) D \log L}{L} + \frac{2\beta AD^2}{L^{3/4}} + \frac{2Q^{1/2}D}{L^{1/4}}  \\
+     & \quad + \E \left[ \frac{1}{nLT}\sum_{\ell=1}^{L} \sum_{i=1}^n \sum_{t=1}^T \langle \widetilde{\vect{a}}_{i,\ell}^t,\vect{v}_{i,\ell}^t - \vect{o}_{\ell}^t \rangle \right]
+     \tag{$\sum_{\ell=1}^L \frac{1}{(\ell + 4)^{1/4}}\leq 2 L^{3/4}$}\\
+     %
+     &\leq \frac{DG}{L^{1/4}A} + \frac{(\beta C_p + C_d) D \log L}{L} + \frac{2\beta AD^2}{L^{3/4}} + \frac{2Q^{1/2}D}{L^{1/4}} + O \left(\mathcal{R}^T\right) \\
+     \tag{$\vect{v}^t_{i,\ell}$ are chosen by the online oracles with regret $\mathcal{R}^T$}
+\end{align*}
+%
+Recall that, 
+\begin{align*}
+    \E_{\overline{\vect{x}}^t}{ \left[ \mathcal{G}^t \right]}
+    &= \E_{\overline{\vect{x}}^t}{\left[ \max_{\vect{o} \in \mathcal{K}} \langle \nabla F_t\left( \overline{\vect{x}}^t \right), \overline{\vect{x}}^t - \vect{o} \rangle \right]} 
+\end{align*}
+Therefore by lemma \ref{lemma:final_step}, 
+\begin{align*}
+    \E \left[ \frac{1}{T} \sum_{t=1}^T \E_{\vect{x}_i^t}\left[ \max_{\vect{o} \in \mathcal{K}} \langle \nabla F_t\left( \vect{x}_i^t \right), \vect{x}_i^t - \vect{o} \rangle \right] \right]
+    &\leq \E \left[ \frac{1}{T} \sum_{t=1}^T  \E_{\overline{\vect{x}}^t}{\left[ \max_{\vect{o} \in \mathcal{K}} \langle \nabla F_t\left( \overline{\vect{x}}^t \right), \overline{\vect{x}}^t - \vect{o} \rangle \right]} \right] \\
+    & \quad + \frac{(\beta D + G)C_p \log L}{L} \\
+    %
+    &\leq \frac{DG + 2ADQ^{1/2}}{L^{1/4}} + \frac{2AD^2\beta}{L^{3/4}} \\
+    &+\left[ \left(\beta D + G\right) + \left(\beta C_p + C_d\right)D \right]  \frac{\log L }{L} + O \left(\mathcal{R}^T \right) 
+\end{align*}
+%
+Since $\max$ is a convex function, the theorem follows by applying Jensen's inequality on the left-hand side of the above equation.
+\end{proof}

@@ -1,0 +1,607 @@
+\section{Appendix}
+\appendices
+% \label{chap:Appendix}
+\subsection{Analysis of section \ref{sec:exact}} 
+In the analysis, we denote $\overline{\vect{x}}^{t}_{\ell} := \frac{1}{n} \sum_{j=1}^{n} \vect{x}^{t}_{j,\ell}$.
+%and $F^{t}_{\ell} := \frac{1}{n} \sum_{j=1}^{n} f^{t}_{j}(\vect{y}^{t}_{j,\ell})$. 
+
+\begin{lemma}\label{lmm:avg}
+For every $1 \leq t \leq T$ and $1 \leq \ell \leq L$, it holds that 
+\begin{equation}
+  \overline{\vect{x}}^t_{\ell+1} - \overline{\vect{x}}^t_{\ell} = \eta_{\ell} \left( \frac{1}{n}\sum_{i=1}^{n} \vect{v}^t_{i,\ell} - \overline{\vect{x}}^t_{\ell}\right)
+\end{equation}
+\end{lemma} 
+
+\begin{proof}
+\begin{linenomath}
+\begin{align*}
+\overline{\vect{x}}_{\ell+1}^t 
+&= \frac{1}{n} \sum_{i=1}^{n} \vect{x}^{t}_{i,\ell + 1} \tag{Definition of $\overline{\vect{x}}_{\ell+1}^t$}
+\\
+&= \frac{1}{n} \sum_{i=1}^{n} \left ((1-\eta_{\ell}) \vect{y}^{t}_{i,\ell} + \eta_{\ell} \vect{v}_{i,\ell}^t \right )  \tag{Definition of $\vect{x}_{i,\ell}^t$} 
+\\
+&= \frac{1}{n} \sum_{i=1}^{n} \left [ (1-\eta_{\ell}) \left ( \sum_{j=1}^n \vect{W}_{ij} \vect{x}_{j,\ell}^t  \right ) + \eta_{\ell} \vect{v}_{i,\ell}^t \right ] \tag{Definition of $\vect{y}_{i,\ell}^t$}
+\\
+&= (1 - \eta_{\ell}) \frac{1}{n} \sum_{i=1}^n \left [ \sum_{j=1}^n \vect{W}_{ij}\vect{x}_{j,\ell}^t \right ] + \frac{1}{n}\eta_{\ell} \sum_{i=1}^n \vect{v}_{i,\ell}^t
+\\
+&= (1 - \eta_{\ell}) \frac{1}{n} \sum_{j=1}^n \left [ \vect{x}_{j,\ell}^t \sum_{i=1}^n \vect{W}_{ij} \right ] + \frac{1}{n} \eta_{\ell} \sum_{i=1}^n \vect{v}_{i,\ell}^t
+\\
+&= (1 - \eta_{\ell}) \frac{1}{n} \sum_{j=1}^n \vect{x}_{j,\ell}^t + \frac{1}{n} \eta_{\ell} \sum_{i=1}^n \vect{v}_{i,\ell}^t \tag{$\sum_{i=1}^n W_{ij} =1$ for every $j$}
+\\
+&= (1 - \eta_{\ell}) \overline{\vect{x}}_{\ell}^t + \frac{1}{n} \eta_{\ell} \sum_{i=1}^n \vect{v}_{i,\ell}^t
+\\
+&= \overline{\vect{x}}_{\ell}^t + \eta_{\ell} \left ( \frac{1}{n} \sum_{i=1}^n \vect{v}_{i,\ell}^t - \overline{\vect{x}}_{\ell}^t \right )
+\end{align*}
+\end{linenomath}
+where we use a property of $W$ which is $\sum_{i = 1}^{n} W_{ij} = 1$ for every $j$.
+\end{proof}
+%\thang{claim should be proved and put out of this proof, for example just close to Lemma 1}
+
+\begin{lemma}
+\label{lemma:final_step}
+For all $i \in \{1, \cdots, n \}$, recall that $\overline{\vect{x}}^t = \frac{1}{n}\sum_{i=1}^n \vect{x}^t_{i}$, we have,
+\begin{align*}
+    \E{\left[\max_{a \in \mathcal{K}}\langle \nabla F_t (\vect{x}^t_{i}), \vect{x}^t_i - a \rangle \right]}
+    & \leq \E{\left[\max_{a \in \mathcal{K}}\langle \nabla F_t (\overline{\vect{x}}^t), \overline{\vect{x}}^t - a \rangle \right]} + \left(\beta D + G \right)C_p \frac{\log L}{L}
+\end{align*}
+\end{lemma}
+
+\begin{proof} For all $i \in \{1, \cdots, n\}$
+\begin{linenomath}
+\begin{align*}
+    \langle \nabla F_t (\vect{x}^t_i), \vect{x}^t_i - a \rangle 
+    & = \langle \nabla F_t (\overline{\vect{x}}^t), \overline{\vect{x}}^t - a \rangle + \langle \nabla F_t (\vect{x}^t_i) - \nabla F_t (\overline{\vect{x}}^t), \overline{\vect{x}}^t - a\rangle + \langle \nabla F_t (\vect{x}^t_i), \vect{x}^t_i - \overline{\vect{x}}^t \rangle
+\end{align*}
+%Recall that $\mathcal{G}^t_0 = \E{\left[\max_{a \in \mathcal{K}}\langle \nabla F_t (\overline{\vect{x}}^t), \overline{\vect{x}}^t - a \rangle \right]}$, 
+\begin{align*}
+    \E{\left[\max_{a \in \mathcal{K}}\langle \nabla F_t (\vect{x}^t_{i}), \vect{x}^t_i - a \rangle \right]}
+    & \leq \E{\left[\max_{a \in \mathcal{K}}\langle \nabla F_t (\overline{\vect{x}}^t), \overline{\vect{x}}^t - a \rangle \right]} + \E{\left[\max_{a \in \mathcal{K}} \langle \nabla F (\vect{x}^t_i) - \nabla F_t (\overline{\vect{x}}^t), \overline{\vect{x}}^t - a \rangle \right]} \\
+    & + \E{\left[\langle \nabla F_t (\vect{x}^t_i), \vect{x}^t_i - \overline{\vect{x}}^t \rangle\right]}\\
+    & \leq \E{\left[\max_{a \in \mathcal{K}}\langle \nabla F_t (\overline{\vect{x}}^t), \overline{\vect{x}}^t - a \rangle \right]} + (\beta D + G) \E{\|\vect{x}^t_i - \overline{\vect{x}}^t\|} \\
+    & \leq \E{\left[\max_{a \in \mathcal{K}}\langle \nabla F_t (\overline{\vect{x}}^t), \overline{\vect{x}}^t - a \rangle \right]} + (\beta D + G)C_p \frac{\log L}{L}
+\end{align*}
+\end{linenomath}
+\end{proof}
+
+%\subsection{Proof of Theorem~\ref{thm:gap}}
+\setcounter{theorem}{0}
+
+\begin{theorem}
+%\label{thm:gap}
+Let $\mathcal{K}$ be a convex set with diameter D. Assume that functions $F^{t}$ (possibly non convex) are $\beta$-smooth and G-Lipschitz for every t. With the choice of step size $\eta_{\ell} = min\left(1, \frac{A}{\ell^{\alpha}}\right)$ where $A \in \mathbb{R_+}$ and $\alpha \in (0,0.5)\cup(0.5,1)$. 
+Then, Algorithm 1 guarantees that for all $1 \leq i \leq n$:
+
+    \begin{align*}
+       \frac{1}{T} &\sum_{t=1}^{T} \E \bigl [ \max_{\vect{a}^{\prime} \in \mathcal{K}}\langle \nabla F(\vect{x}^t_{i}), \vect{x}^t_{i} - \vect{a}^{\prime}\rangle \bigr] \nonumber 
+         \leq \frac{GDA^{-1}}{L^{1-\alpha}} + \frac{\mathcal{R}^T}{T}(1-\alpha)^{-1} + \left(\beta D + G \right)C_p \frac{\log L}{L} \nonumber \\
+        & \qquad \qquad \qquad + \begin{cases}
+                \frac{\left(\beta C_p +  C_d\right)D + A D^2 \beta / 2}{L^{\alpha}(1-2\alpha)} &\text{ if } 0 < \alpha < 0.5; \\
+                \frac{\left(\beta C_p + C_d\right)D + A D^2 \beta / 2}{L^{1-\alpha}(1-\frac{1}{2\alpha})} &\text{ if } 0.5 < \alpha < 1.
+         \end{cases}
+    \end{align*}
+
+
+%\begin{linenomath}
+%    \begin{align*}
+%        \frac{1}{T}\sum_{t=1}^{T} \mathcal{G}^t_{0}  & \leq \frac{GDA^{-1}}{L^{1-\alpha}} +
+%         \frac{\left(\beta C_p + C_d\right)D + A D^2 \beta / 2}{L^{1-\alpha}(1-\frac{1}{2\alpha})} \nonumber \\
+%        & + \frac{\mathcal{R}^T}{T}(1-\alpha)^{-1}
+%    \end{align*}
+%\end{linenomath} 
+Setting $\mathbf{D} = \left(\beta C_p + C_d\right)D + A D^2 \beta / 2$, $ c(\alpha)= \dfrac{1}{1-2\alpha}$, $d(\alpha) = \dfrac{2\alpha}{2\alpha - 1}$ and $\mathcal{R}^T$ is the regret of online linear minimization oracles. Choosing $L=T$ and oracles as gradient descent or follow-the-perturbed-leader with regret $\mathcal{R}^T =
+O\left(\sqrt{T}\right)$, we obtain a convergence rate of $O\left(\dfrac{\mathbf{D}c(\alpha)}{T^{\alpha}} \right)$ and $O\left(\dfrac{GDA^{-1}+\mathbf{D} d(\alpha)}{T^{1-\alpha}} \right)$ when $\alpha \in (0,0.5) $ and $\alpha \in (0.5, 1)$, respectively.
+\end{theorem}
+
+%
+\begin{proof}
+By $\beta$-smoothness, $\forall \ell \in \{1, \cdots, L\}$: 
+
+\begin{equation}\label{eq:smth}
+    F^{t}\left( \overline{\vect{x}}^{t}_{\ell+1} \right) - F^{t} \left( \overline{\vect{x}}^{t}_{\ell} \right) \leq \langle \nabla F^{t} \left( \overline{\vect{x}}^t_{\ell} \right), \overline{\vect{x}}^t_{\ell+1} - \overline{\vect{x}}^t_{\ell} \rangle + \frac{\beta}{2} \left \| \overline{\vect{x}}^t_{\ell+1} - \overline{\vect{x}}^t_{\ell} \right\|^{2}
+\end{equation} 
+\newline 
+Using Lemma~\ref{lmm:avg}, the inner product in~(\ref{eq:smth}) can be re-written as : 
+\begin{equation}
+\label{eq:inner_beta}
+    \begin{aligned}
+        \left \langle \nabla F^{t} \left( \overline{\vect{x}}^t_{\ell} \right), \overline{\vect{x}}^t_{\ell+1} - \overline{\vect{x}}^t_{\ell} \right \rangle
+        & = \eta_{\ell} \left \langle \nabla F^{t} \left( \overline{\vect{x}}^t_{\ell} \right), \frac{1}{n}\sum_{i=1}^{n} \vect{v}^t_{i,\ell} - \overline{\vect{x}}^t_{\ell} \right \rangle \\
+        &= \eta_{\ell} \left \langle \nabla F^{t} \left( \overline{\vect{x}}^t_{\ell} \right),  \frac{1}{n} \biggl(\sum_{i=1}^{n} \vect{v}^t_{i,\ell} - n \cdot \overline{\vect{x}}^t_{\ell} \biggr) \right \rangle \\
+        &=  \frac{\eta_{\ell}}{n}\sum_{i=1}^{n} \left \langle \nabla F^{t} \left( \overline{\vect{x}}^t_{\ell} \right), \vect{v}^t_{i,\ell} - \overline{\vect{x}}^t_{\ell} \right \rangle
+    \end{aligned}
+\end{equation} 
+\newline
+Define $\vect{a}^t_{\ell}$ as:
+\begin{linenomath}
+    \begin{align*}
+        \vect{a}^t_{\ell} = \argmin_{\vect{a}^{\prime} \in \mathcal{K}}\langle \nabla F(\overline{\vect{x}}^t_{\ell}),\vect{a}^{\prime} \rangle
+    \end{align*}
+\end{linenomath}
+and recall that :
+\begin{equation*}
+ \mathcal{G}^t_{\ell} := \max_{\vect{a}^{\prime} \in \mathcal{K}}\langle \nabla F(\overline{\vect{x}}^t_{\ell}), \overline{\vect{x}}^t_{\ell} - \vect{a}^{\prime}\rangle = \langle \nabla F(\overline{\vect{x}}^t_{\ell}), \overline{\vect{x}}^t_{\ell} - \vect{a}^t_{\ell}\rangle
+\end{equation*} 
+We have :
+\begin{linenomath}
+    \begin{align*}
+        \left \langle \nabla F^{t} \left( \overline{\vect{x}}^t_{\ell} \right) , \vect{v}^t_{i,\ell} - \overline{\vect{x}}^t_{\ell} \right \rangle 
+        & =\langle \nabla F^{t} \left( \overline{\vect{x}}^t_{\ell} \right) - \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{a}^t_{\ell} \rangle 
+         + \langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{a}^t_{\ell} \rangle 
+         + \langle \nabla F^{t} \left( \overline{\vect{x}}^t_{\ell} \right), \vect{a}^t_{\ell} - \overline{\vect{x}}^t_{\ell} \rangle \\
+        &\leq \|\nabla F^{t} \left(\overline{\vect{x}}^t_{\ell} \right) - \vect{d}^t_{i, \ell} \| \|\vect{v}^t_{i,\ell} - \vect{a}^t_{\ell}\| + \langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{a}^t_{\ell} \rangle 
+         + \langle \nabla F^{t} \left( \overline{\vect{x}}^t_{\ell} \right), \vect{a}^t_{\ell} - \overline{\vect{x}}^t_{\ell} \rangle \tag{by Cauchy-Schwarz}\\
+         & \leq \|\nabla F^{t} \left(\overline{\vect{x}}^t_{\ell} \right) - \vect{d}^t_{i, \ell} \|D + \langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{a}^t_{\ell} \rangle 
+         + \langle \nabla F^{t} \left( \overline{\vect{x}}^t_{\ell} \right), \vect{a}^t_{\ell} - \overline{\vect{x}}^t_{\ell} \rangle 
+    \end{align*}
+\end{linenomath} 
+\newline
+Using Lemma~\ref{lem:convergence} and $\beta$-smoothness of $F^t$,
+\begin{linenomath}
+    \begin{align*}
+        \left\| \nabla F^{t} \left(\overline{\vect{x}}^t_{\ell} \right) - \vect{d}^t_{i, \ell} \right\|
+        & \leq \left\| \nabla F^{t} \left(\overline{\vect{x}}^t_{\ell} \right) - \frac{1}{n}\sum_{i=1}^n \nabla f^t_i (\vect{y}^t_{i,\ell}) \right\| + \left \lVert\frac{1}{n}\sum_{i=1}^n \nabla f^t_i (\vect{y}^t_{i,\ell}) - \vect{d}^t_{i, \ell} \right\lVert \\
+        & \leq \left\| \frac{1}{n}\sum_{i=1}^n \nabla f^{t}_{i} \left(\overline{\vect{x}}^t_{\ell} \right) - \frac{1}{n}\sum_{i=1}^n \nabla f^t_i (\vect{y}^t_{i,\ell}) \right\| + \left \lVert\frac{1}{n}\sum_{i=1}^n \nabla f^t_i (\vect{y}^t_{i,\ell}) - \vect{d}^t_{i, \ell} \right\lVert \\
+        & \leq  \frac{1}{n}\sum_{i=1}^n \left \|\nabla f^{t}_{i} \left(\overline{\vect{x}}^t_{\ell} \right) -  \nabla f^t_i (\vect{y}^t_{i,\ell}) \right\| + \left \lVert\frac{1}{n}\sum_{i=1}^n \nabla f^t_i (\vect{y}^t_{i,\ell}) - \vect{d}^t_{i, \ell} \right\lVert \\
+        & \leq \frac{\beta}{n} \sum_{i=1}^n \left \| \overline{\vect{x}}^t_{\ell} - \vect{y}^t_{i, \ell} \right\| + \left\|\frac{1}{n}\sum_{i=1}^n \nabla f^t_i (\vect{y}^t_{i,\ell}) - \vect{d}^t_{i, \ell} \right\| \tag{by $\beta$ smoothness}\\
+        & \leq \frac{\beta C_p + C_d}{\ell}  \tag{by Lemma \ref{lem:convergence}}
+    \end{align*}
+\end{linenomath}
+Thus,
+\begin{linenomath}
+    \begin{align*}
+        \left \langle \nabla F^{t} \left( \overline{\vect{x}}^t_{\ell} \right) , \vect{v}^t_{i,\ell} - \overline{\vect{x}}^t_{\ell} \right \rangle 
+        & \leq \left( \frac{\beta C_p + C_d}{\ell}\right)D + \langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{a}^t_{\ell} \rangle - \mathcal{G}^t_{\ell} 
+    \end{align*}
+\end{linenomath}
+Upper bound  the right hand side of~(\ref{eq:inner_beta}) by the above inequality, we have :
+
+
+\begin{equation}
+\label{eq:inner_beta2}
+    \begin{aligned}
+        \left \langle \nabla F^{t} \left( \overline{\vect{x}}^t_{\ell} \right), \overline{\vect{x}}^t_{\ell+1} - \overline{\vect{x}}^t_{\ell} \right \rangle
+        & \leq \eta_{\ell}\left( \frac{\beta C_p + C_d}{\ell}\right)D + \frac{\eta_{\ell}}{n} \sum_{i=1}^{n}\langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{a}^t_{\ell} \rangle - \eta_{\ell}\mathcal{G}^t_{\ell} 
+    \end{aligned}
+\end{equation}  Combining~(\ref{eq:smth}) with~(\ref{eq:inner_beta2}) and re-arrange the terms, as $\eta_{\ell} = \frac{A}{\ell^{\alpha}}$, we have : 
+\begin{equation}
+\label{eq:eta_gap_ell}
+    \begin{aligned}
+         \eta_{\ell} \mathcal{G}^t_{\ell} 
+        & \leq F^{t} \left( \overline{\vect{x}}^t_{\ell} \right) - F^{t} \left( \overline{\vect{x}}^t_{\ell+1} \right) 
+        + \eta_{\ell}\left( \frac{\beta C_p + C_d}{\ell}\right)D + \frac{\eta_{\ell}}{n} \sum_{i=1}^{n}\langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{a}^t_{\ell} \rangle + \eta^2_{\ell}D^2 \frac{\beta}{2} \\
+        & \leq F^{t} \left( \overline{\vect{x}}^t_{\ell} \right) - F^{t} \left( \overline{\vect{x}}^t_{\ell+1} \right)
+        + \left[ \left( \beta C_p + C_d \right)AD + A^2 D^2 \beta/2 \right] \frac{1}{\ell^{2\alpha}} + \frac{\eta_{\ell}}{n} \sum_{i=1}^{n}\langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{a}^t_{\ell} \rangle 
+    \end{aligned}
+\end{equation}  Let $\mathcal{G}^t$ be a random variable such that $\mathcal{G}^t = \mathcal{G}^t_{\ell}$ with probability $\frac{1}{L}$. Recall that $\eta_{L} \leq \eta_{\ell}$ : 
+%\begin{equation}
+%    \begin{aligned}
+%        \eta_{L} \E \left[ \mathcal{G}^t \right] \leq 
+%        \eta_{L}\frac{1}{L}\sum_{\ell=1}^L\mathcal{G}^t_{\ell%} \leq \frac{1}{L}\sum_{\ell=1}^L \eta_{\ell} %\mathcal{G}^t_{\ell}
+%    \end{aligned}
+%\end{equation}
+\begin{equation}
+    \begin{aligned}
+        \eta_{L} \E \left[ \mathcal{G}^t \right] \leq 
+        \frac{1}{L}\sum_{\ell=1}^L\eta_{\ell}\mathcal{G}^t_{\ell}
+        & \leq \frac{1}{L}\sum_{\ell=1}^{L}F^{t} \left( \overline{\vect{x}}^t_{\ell} \right) - F^{t} \left( \overline{\vect{x}}^t_{\ell+1} \right)
+        + \frac{ \left( \beta C_p + C_d \right)AD + A^2 D^2 \beta/2}{L}\sum_{\ell=1}^{L} \frac{1}{\ell^{2\alpha}}\\
+        &+ \frac{1}{L}\sum_{\ell=1}^{L}\frac{\eta_{\ell}}{n} \sum_{i=1}^{n}\langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{a}^t_{\ell} \rangle 
+    \end{aligned}
+\end{equation} 
+%\thang{line too long}
+\newline
+For all $\alpha \in (0, 1)$, 
+\begin{equation}
+\begin{aligned}
+    \sum_{\ell=1}^{L} \frac{1}{\ell^{\alpha}} \leq 1 + \int_{1}^L \frac{1}{s^{\alpha}} = 1 + \frac{L^{1-\alpha} - 1}{1-\alpha} \leq \frac{L^{1-\alpha}}{1-\alpha}
+\end{aligned}
+\end{equation} We also have :
+\begin{equation}
+    \begin{aligned}
+        \sum_{\ell=1}^{L} \frac{1}{\ell^{2\alpha}}
+        & \leq 1 + \int_{1}^{L} \frac{1}{s^{2\alpha}}ds \\
+        & \leq 1 +  \begin{dcases}
+            \frac{L^{1-2\alpha}}{1-2\alpha} - \frac{1}{1-2\alpha} = \frac{L^{1-2\alpha} - 2\alpha}{1-2\alpha} \leq \frac{L^{1-2\alpha}}{1-2\alpha} &\text{ if } 0 < \alpha < 0.5\\
+            \frac{1-L^{-(2\alpha-1)}}{2\alpha-1} = \frac{2\alpha - L^{1-2\alpha}}{2\alpha - 1} \leq \frac{2\alpha}{2\alpha - 1} &\text{ if } 0.5 < \alpha < 1 \\
+            \end{dcases} 
+    \end{aligned}
+\end{equation} 
+
+\begin{comment}
+In case $\alpha > 0.5$ :
+\begin{equation}
+    \begin{aligned}
+        \sum_{\ell=1}^{L} \frac{1}{\ell^{2\alpha}} \leq 1 + \int_{1}^{L} \frac{1}{s^{2\alpha}}ds \leq 1 + \frac{1-L^{-(2\alpha-1)}}{2\alpha-1} = \frac{2\alpha - L^{1-2\alpha}}{2\alpha - 1} \leq \frac{2\alpha}{2\alpha - 1} 
+    \end{aligned}
+\end{equation}
+\end{comment} 
+By $G$-Lipschitz property of $F^t$ and bounded convexity of $\mathcal{K}$, we have then,
+\begin{equation}
+    \begin{aligned}
+        \eta_L \E \bigl[\mathcal{G}^t] 
+        %& \leq \frac{GD}{L}
+        %+ \frac{\left(\beta C_p + C_d\right)AD}{L}\frac{L^{1-2\alpha}}{1-2\alpha}
+        % + \frac{1}{nL}\sum_{\ell=1}^{L}\sum_{i=1}^{n}\eta_{\ell}\langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{a}^t_{\ell} \rangle  + \frac{A^2 D^2 \beta / 2}{L}\frac{L^{1-2\alpha}}{1-2\alpha}\\
+        & \leq \frac{GD}{L} + \frac{1}{nL}\sum_{\ell=1}^{L}\sum_{i=1}^{n}\frac{A}{\ell^\alpha}\langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{a}^t_{\ell} \rangle \\
+        & + \begin{dcases}
+            \frac{\left(\beta C_p + C_d\right)AD + A^2 D^2 \beta / 2}{L} \frac{L^{1-2\alpha}}{1-2\alpha} &\text{ if } 0 < \alpha < 0.5\\
+            \frac{\left(\beta C_p + C_d\right)AD + A^2 D^2 \beta / 2}{L}\frac{2\alpha}{2\alpha-1} &\text{ if } 0.5 < \alpha < 1 \\
+        \end{dcases}
+    \end{aligned}
+\end{equation} Recall that $\eta_{L} = \frac{A}{L^{\alpha}}$, dividing both side of the inequality by $\eta_{L}$ yields
+\begin{equation}
+    \begin{aligned}
+        \E \bigl[\mathcal{G}^t]
+        & \leq \frac{GDA^{-1}}{L^{1-\alpha}} + \frac{1}{nL^{1-\alpha}}\sum_{\ell=1}^{L}\sum_{i=1}^{n}\frac{1}{\ell^{\alpha}}\langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{a}^t_{\ell} \rangle \\
+        & + \begin{dcases}
+            \frac{\left(\beta C_p + C_d\right)D + A D^2 \beta / 2}{L^{\alpha}}(1-2\alpha)^{-1} &\text{ if } 0 < \alpha < 0.5\\
+            \frac{\left(\beta C_p + C_d\right)D + A D^2 \beta / 2}{L^{1-\alpha}}\frac{2\alpha}{2\alpha-1} &\text{ if } 0.5 < \alpha < 1 \\
+        \end{dcases}
+    \end{aligned}
+\end{equation} Taking the mean on $T$, if the chosen oracle has regret of $O \left(\sqrt{T}\right)$, the second term on the right hand side of the above equation is bounded by $O \left(\frac{(1-\alpha)^{-1}}{\sqrt{T}} \right)$,
+\begin{equation}
+\label{eq:case1_finalbound}
+    \begin{aligned}
+        \frac{1}{T}\sum_{t=1}^{T} \E \bigl[\mathcal{G}^t]  
+        & \leq \frac{GDA^{-1}}{L^{1-\alpha}} + O \left(\frac{(1-\alpha)^{-1}}{\sqrt{T}} \right) 
+        + \begin{dcases}
+            \frac{\left(\beta C_p + C_d\right)D + A D^2 \beta / 2}{L^{\alpha}}(1-2\alpha)^{-1} &\text{ if } 0 < \alpha < 0.5\\
+             \frac{\left(\beta C_p + C_d\right)D + A D^2 \beta / 2}{L^{1-\alpha}}\frac{2\alpha}{2\alpha-1} &\text{ if } 0.5 < \alpha < 1 \\
+        \end{dcases}
+    \end{aligned}
+\end{equation} 
+Recall that,
+\begin{align*}
+    \E \left[\mathcal{G}^t\right] = \E{\left[\max_{a \in \mathcal{K}}\langle \nabla F_t (\overline{\vect{x}}^t), \overline{\vect{x}}^t - a \rangle \right]}
+\end{align*}
+The theorem followed by applying lemma \ref{lemma:final_step} and setting $L=T$ in~(\ref{eq:case1_finalbound}) %and~(\ref{eq:case2_finalbound}).
+
+\begin{comment}
+\textbf{In case $\alpha > 0.5$ :}
+\begin{equation}
+    \begin{aligned}
+        \sum_{\ell=1}^{L} \frac{1}{\ell^{2\alpha}} \leq 1 + \int_{1}^{L} \frac{1}{s^{2\alpha}}ds \leq 1 + \frac{1-L^{-(2\alpha-1)}}{2\alpha-1} = \frac{2\alpha - L^{1-2\alpha}}{2\alpha - 1} \leq \frac{2\alpha}{2\alpha - 1} 
+    \end{aligned}
+\end{equation} Using the same analysis as the above, we have :
+
+\begin{equation}
+    \begin{aligned}
+        \eta_L \E \bigl[\mathcal{G}^t_{\ell}]
+        & \leq \frac{GD}{L}
+        + \frac{\left(\beta C_p + C_d\right)AD}{L}\frac{2\alpha}{2\alpha-1}
+         + \frac{1}{nL}\sum_{\ell=1}^{L}\sum_{i=1}^{n}\eta_{\ell}\langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{a}^t_{\ell} \rangle  + \frac{A^2 D^2 \beta / 2}{L}\frac{2\alpha}{2\alpha-1}\\
+        & \leq \frac{GD}{L} + \frac{\left(\beta C_p + C_d\right)AD + A^2 D^2 \beta  2}{L}\frac{2\alpha}{2\alpha-1} + \frac{1}{nL}\sum_{\ell=1}^{L}\sum_{i=1}^{n}\frac{A}{\ell^\alpha}\langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{a}^t_{\ell} \rangle
+    \end{aligned}
+\end{equation}
+Thus, 
+\begin{equation}
+    \begin{aligned}
+        \E \bigl[\mathcal{G}^t_{\ell}]
+        & \leq \frac{GDA^{-1}}{L^{1-\alpha}} + \frac{\left(\beta C_p + C_d\right)D + A D^2 \beta / 2}{L^{1-\alpha}}\frac{2\alpha}{2\alpha-1} + \frac{1}{nL^{1-\alpha}}\sum_{\ell=1}^{L}\sum_{i=1}^{n}\frac{1}{\ell^{\alpha}}\langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{a}^t_{\ell} \rangle
+    \end{aligned}
+\end{equation}
+As in~(\ref{eq:case1_finalbound}), we take the mean on T and choose an oracle with regret $O \left(\sqrt{T}\right)$, the last term of the above equation is bounded by $O \left(\frac{(1-\alpha)^{-1}}{\sqrt{T}} \right)$,
+\begin{equation}
+\label{eq:case2_finalbound}
+    \begin{aligned}
+        \frac{1}{T}\sum_{t=1}^{T} \E \bigl[\mathcal{G}^t_{\ell}] 
+        & \leq & \leq \frac{GDA^{-1}}{L^{1-\alpha}} + \frac{\left(\beta C_p + C_d\right)D + A D^2 \beta / 2}{L^{1-\alpha}}\frac{2\alpha}{2\alpha-1} + O \left(\frac{(1-\alpha)^{-1}}{\sqrt{T}} \right)
+    \end{aligned}
+\end{equation} 
+\newline
+Recall that,
+\begin{align*}
+    \E \left[\mathcal{G}^t_{\ell}\right] = \E{\left[\max_{a \in \mathcal{K}}\langle \nabla F_t (\overline{\vect{x}}^t), \overline{\vect{x}}^t - a \rangle \right]}
+\end{align*}
+The theorem followed by applying lemma \ref{lemma:final_step} and setting $L=T$ in~(\ref{eq:case1_finalbound}) and~(\ref{eq:case2_finalbound}).
+\end{comment}
+\end{proof}
+
+\subsection{Proof of Theorem \ref{thm:stoc}}
+%\subsubsection{Stochastic gradient estimate}
+
+\begin{lemma}[Lemma 3, \cite{zhang20_quantized:2020}]
+\label{lmm:red_var}
+Let $\{\vect{d}_{\ell}\}_{\ell \geq 1}$ be a sequence of points in $\mathbb{R}^n$ such that $\|\vect{d}_{\ell} - \vect{d}_{\ell-1}\| \leq \dfrac{B}{(\ell +3)^{\alpha}}$ for all $\ell \geq 1$ with fixed constant $B \geq 0$, $\alpha \in (0,1]$. Let $\{ \widetilde{\vect{d}}_{\ell} \}$ be a sequence of random variables such that $\mathbb{E} [\widetilde{\vect{d}}_{\ell}|\mathcal{H}_{\ell-1}] = \vect{d}_{\ell}$ and $\mathbb{E} \left[ \bigl \| \widetilde{\vect{d}}_{\ell} - \vect{d}_{\ell} \bigr \|^2 | \mathcal{H}_{\ell-1} \right] \leq \sigma^2$ for every $\ell \geq 1$, where $\mathcal{H}_{\ell - 1}$ is the history up to $\ell-1$. Let $\{ \widetilde{\vect{a}}_{\ell}\}_{\ell \geq 0}$ be a sequence of random variables defined recursively as  
+\begin{linenomath}
+    \[ \widetilde{\vect{a}}_{\ell} = (1 - \rho_{\ell}) \widetilde{\vect{a}}_{\ell-1} + \rho_{\ell} \widetilde{\vect{d}}_{\ell} \] 
+\end{linenomath}
+%
+for $\ell \geq 1$ where  $\rho_{\ell} = \dfrac{2}{(\ell+3)^{2\alpha/3}}$ and 
+$\widetilde{\vect{a}}_{0}$ is fixed. Then we have 
+
+\begin{equation*}
+        \E{\|\vect{d}_{\ell} - \Tilde{\vect{a}}_{\ell} \|^2} \leq \frac{Q}{(\ell + 4)^{2\alpha/3}}
+\end{equation*}
+where $Q = \max\{4^{2\alpha/3}\|\Tilde{\vect{a}}_0 - \vect{d}_0\|^2, 4\sigma^2 + 2B^2\}$
+\end{lemma}
+
+\begin{lemma}[DMFW]
+\begin{equation*}
+    \E{\|\Tilde{\vect{d}}^t_{i,\ell} - \vect{d}^t_{i,\ell} \|^2} \leq 12\left(\Tilde{\beta}^2 + \beta^2\right) \left(2C_p + AD \right)^2 + \sigma^2
+\end{equation*}
+\end{lemma}
+
+\begin{claim}[DMFW]
+\begin{equation*}
+    \| \vect{d}^t_{i,\ell+1} - \vect{d}^t_{i, \ell} \| \leq \frac{B}{(\ell+3)^{\alpha}} 
+\end{equation*}
+\end{claim}
+
+\begin{claim}
+\label{claim:quantized_fw}
+By Lemma \ref{lmm:red_var},
+\begin{equation*}
+    \E{\|\vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^t_{i,\ell} \|} \leq \sqrt{\E{\|\vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^t_{i,\ell} \|^{2}}} \leq \frac{Q^{1/2}}{(\ell + 4)^{1/4}}
+\end{equation*}
+\end{claim}
+
+\begin{theorem}
+\label{thm:stoc}
+Let $\mathcal{K}$ be a convex set with diameter $D$. Assume that for every $1 \leq t \leq T$, 
+\begin{enumerate}
+	\item functions $f^{t}_{i}$ are $\beta$-smooth, i.e. $\nabla f^{t}_{i}$ is $\beta$-Lipschitz,  (so $F^{t}$ is $\beta$-smooth);
+	\item $\| \nabla f^{t}_{i}\| \leq G$ (so $\| \nabla F^{t}\| \leq G$);
+	\item the gradient estimates are unbiased with bounded variance $\sigma^{2}$, i.e., 
+		$\E [\widetilde{\nabla} f^{t}_{i}(\vect{x}^{t}_{i,\ell})] = \nabla f^{t}_{i}(\vect{x}^{t}_{i,\ell})$
+		and $\bigl \| \widetilde{\nabla} f^{t}_{i}(\vect{x}^{t}_{i,\ell})] - \nabla f^{t}_{i}(\vect{x}^{t}_{i,\ell}) \bigr \| \leq \sigma$
+		for every $1 \leq i \leq n$ and $1 \leq \ell \leq L$;
+	\item the gradient estimates are $\widetilde{\beta}$-Lipschitz.
+\end{enumerate}
+Then, choosing the step-sizes $\eta_\ell = \min \{1, \frac{A}{\ell^{3/4}}\}$ where $A \in \mathbb{R}_+$. For all $1 \leq i \leq n$, 
+\begin{align*}
+    \frac{1}{T} \sum_{t=1}^T \E\left[ \max_{\vect{a} \in \mathcal{K}} \langle \nabla F_t\left( \vect{x}_i^t \right), \vect{x}_i^t - \vect{a} \rangle \right]
+    &\leq \frac{DG + ADQ^{1/2}}{L^{1/4}} + \frac{4(\beta C_p + C_d) D + 2AD^2\beta}{L^{3/4}}
+    + \frac{\mathcal{R}^T}{T} \\
+    &+ \frac{(\beta D + G)C_p \log L}{L}
+\end{align*}
+Choosing $L=T$ and oracles as gradient descent or follow-the-perturbed-leader with regret $\mathcal{R}^T =
+O\left(\sqrt{T}\right)$, we obtain a convergence rate of $O\left( \dfrac{DG + ADQ^{1/2}}{T^{1/4}} \right)$
+
+\end{theorem}
+
+
+\begin{proof}
+By equation \ref{eq:eta_gap_ell} of theorem \ref{thm:gap}, setting $\alpha = \frac{3}{4}$
+\begin{align}
+         \eta_{\ell} \mathcal{G}^t_{\ell} 
+        & \leq F_t \left( \overline{\vect{x}}^t_{\ell} \right) - F_t \left( \overline{\vect{x}}^t_{\ell+1} \right) 
+        + \eta_{\ell}\left( \frac{\beta C_p + C_d}{\ell}\right)D + \frac{\eta_{\ell}}{n} \sum_{i=1}^{n}\langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{a}^t_{\ell} \rangle + \eta^2_{\ell}D^2 \frac{\beta}{2}
+\end{align}
+Thus, 
+\begin{align*}
+        \mathcal{G}^t_{\ell} 
+        & \leq 
+         \frac{1}{\eta_{\ell}}\left(F_t \left( \overline{\vect{x}}^t_{\ell} \right) - F_t \left( \overline{\vect{x}}^t_{\ell+1} \right) \right) 
+        + \left( \frac{\beta C_p + C_d}{\ell}\right)D + \frac{1}{n} \sum_{i=1}^{n}\langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle + \eta_{\ell}D^2 \frac{\beta}{2} \\
+        %
+        & \leq \frac{\ell^{3/4}}{A}\left(F_t \left( \overline{\vect{x}}^t_{\ell} \right) - F_t \left( \overline{\vect{x}}^t_{\ell+1} \right) \right) 
+        + \left( \frac{\beta C_p + C_d}{\ell}\right)D + \frac{1}{n} \sum_{i=1}^{n}\langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle + \eta_{\ell}D^2 \frac{\beta}{2} \tag{$\eta_{\ell} = \frac{A}{\ell^{3/4}}$}\\
+       %
+       &\leq \frac{L^{3/4}}{A}\left(F_t \left( \Bar{x}^t_{\ell} \right) - F_t \left( \Bar{x}^t_{\ell+1} \right) \right) 
+         + \left( \frac{\beta C_p + C_d}{\ell}\right)D 
+         +\frac{1}{n} \sum_{i=1}^{n}\langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle \\
+         & + \eta_{\ell}D^2 \frac{\beta}{2} \tag{$L \geq \ell$} \\
+        %
+        & \leq \frac{L^{3/4}}{A}\left(F_t \left( \Bar{x}^t_{\ell} \right) - F_t \left( \Bar{x}^t_{\ell+1} \right) \right) 
+         + \left( \frac{\beta C_p + C_d}{\ell}\right)D 
+         +\frac{1}{n} \sum_{i=1}^{n}\langle \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle \\
+         & + \frac{1}{n}\sum_{i=1}^{n}\langle \Tilde{\vect{a}}^{t}_{i, \ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle + \eta_{\ell}D^2 \frac{\beta}{2}\\
+         %
+         & \leq \frac{L^{3/4}}{A}\left(F_t \left( \Bar{x}^t_{\ell} \right) - F_t \left( \Bar{x}^t_{\ell+1} \right) \right) 
+         + \left( \frac{\beta C_p + C_d}{\ell}\right)D 
+         +\frac{1}{n} \sum_{i=1}^{n}  \| \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell} \| \| \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \| \\
+         & + \frac{1}{n}\sum_{i=1}^{n}\langle \Tilde{\vect{a}}^{t}_{i, \ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle + \eta_{\ell}D^2 \frac{\beta}{2} \tag{Cauchy-Schwarz} \\ 
+        %
+       & \leq \frac{L^{3/4}}{A}\left(F_t \left( \Bar{x}^t_{\ell} \right) - F_t \left( \Bar{x}^t_{\ell+1} \right) \right) 
+         + \left( \frac{\beta C_p + C_d}{\ell}\right)D 
+         +\frac{D}{n} \sum_{i=1}^{n}  \| \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell} \| \\
+         & + \frac{1}{n}\sum_{i=1}^{n}\langle \Tilde{\vect{a}}^{t}_{i, \ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle + \eta_{\ell}D^2 \frac{\beta}{2} \tag{$\vect{v}^t_{i,\ell},\vect{a}^{t}_{\ell} \in \mathcal{K}^2 \Rightarrow \| \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \| \leq D$}\\
+\end{align*}
+
+\begin{align*}
+        \mathcal{G}^t_{0}
+        &= \frac{1}{L} \sum_{\ell=1}^{L}\mathcal{G}^{t}_{\ell}\\
+        & \leq \frac{L^{3/4}}{LA} \sum_{\ell=1}^{L} \left(F_t \left( \overline{\vect{x}}^t_{\ell} \right) - F_t \left( \overline{\vect{x}}^t_{\ell+1} \right) \right) + \frac{\left(\beta C_p + C_d\right)D}{L} \sum_{\ell =1}^{L} \frac{1}{\ell} + \frac{D}{nL} \sum_{\ell=1}^{L} \sum_{i=1}^{n} \| \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell} \|\\
+        &+ \frac{1}{n}\sum_{i=1}^{n}\langle \Tilde{\vect{a}}^{t}_{i, \ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle + \frac{AD^2\beta}{2L} \sum_{\ell =1}^{L} \frac{1}{\ell}\\
+        %
+        & \leq \frac{1}{L^{1/4}A} \sum_{\ell=1}^{L} \left(F_t \left( \overline{\vect{x}}^t_{\ell} \right) - F_t \left( \overline{\vect{x}}^t_{\ell+1} \right) \right) + \frac{\left(\beta C_p + C_d\right)D}{L} \sum_{\ell =1}^{L} \frac{1}{\ell^{3/4}} + \frac{D}{nL} \sum_{\ell=1}^{L} \sum_{i=1}^{n} \| \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell} \| \\
+        &+ \frac{1}{n}\sum_{i=1}^{n}\langle \Tilde{\vect{a}}^{t}_{i, \ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle + \frac{AD^2\beta}{2L} \sum_{\ell =1}^{L} \frac{1}{\ell^{3/4}} \tag{$\ell^{3/4} < \ell $}\\
+        %
+        &\leq \frac{1}{L^{1/4}A} \sum_{\ell=1}^{L} \left(F_t \left( \overline{\vect{x}}^t_{\ell} \right) - F_t \left( \overline{\vect{x}}^t_{\ell+1} \right) \right) + \frac{4\left(\beta C_p + C_d\right)D}{L^{3/4}} + \frac{D}{nL} \sum_{\ell=1}^{L} \sum_{i=1}^{n} \| \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell} \| \\
+        &+ \frac{1}{n}\sum_{i=1}^{n}\langle \Tilde{\vect{a}}^{t}_{i, \ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle + \frac{2AD^2\beta}{L^{3/4}}  \tag{$\sum_{\ell =1}^{L} \frac{1}{\ell^{3/4}} \leq 4L^{1/4} $}\\
+        %
+         &\leq \frac{1}{L^{1/4}A} \left(F_t \left( \overline{\vect{x}}^t_{1} \right) - F_t \left( \overline{\vect{x}}^t_{L+1} \right) \right) + \frac{4\left(\beta C_p + C_d\right)D}{L^{3/4}} + \frac{D}{nL} \sum_{\ell=1}^{L} \sum_{i=1}^{n} \| \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell} \| \\
+         &+ \frac{1}{n}\sum_{i=1}^{n}\langle \Tilde{\vect{a}}^{t}_{i, \ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle + \frac{2AD^2\beta}{L^{3/4}}
+         \tag{$\sum_{\ell=1}^{L} F_t\left(\overline{\vect{x}}^t_{\ell} \right) - F_t \left( \overline{\vect{x}}^t_{\ell+1}\right)$ is a telescopic sum}\\
+        %
+        &\leq \frac{G}{L^{1/4}A}  \| \overline{\vect{x}}^t_{1} - \overline{\vect{x}}^t_{L+1} \| + \frac{4\left(\beta C_p + C_d\right)D}{L^{3/4}} + \frac{D}{nL} \sum_{\ell=1}^{L} \sum_{i=1}^{n} \| \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell} \| \\
+        &+ \frac{1}{n}\sum_{i=1}^{n}\langle \Tilde{\vect{a}}^{t}_{i, \ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle + \frac{2AD^2\beta}{L^{3/4}}
+        \tag{$F_t$ is $G$-Lipschitz }\\
+        %
+        &\leq \frac{DG}{L^{1/4}A} + \frac{4\left(\beta C_p + C_d\right)D}{L^{3/4}} + \frac{D}{nL} \sum_{\ell=1}^{L} \sum_{i=1}^{n} \| \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell} \| \\
+        &+  \frac{1}{n}\sum_{i=1}^{n}\langle \Tilde{\vect{a}}^{t}_{i, \ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle + \frac{2AD^2\beta}{L^{3/4}}
+        \tag{$\overline{\vect{x}}^t_{1}, \overline{\vect{x}}^t_{L+1} \in \mathcal{K}^2 \Rightarrow \| \overline{\vect{x}}^t_{1} -  \overline{\vect{x}}^t_{L+1} \| \leq D$}\\
+        %
+        %&\leq \frac{DG}{L^{1/4}A} + \frac{4\left(\beta C_p + C_d\right)D}{L^{3/4}} + \frac{D Q^{1/2}}{L} \sum_{\ell=1}^{L} \frac{1}{(\ell+4)^{1/4}} + \mathcal{R}^T + \frac{2AD^2\beta}{L^{3/4}}
+        %\tag{By claim \ref{claim:quantized_fw}}\\
+        %
+        %&\leq \frac{DG}{L^{1/4}A} + \frac{4\left(\beta C_p + C_d\right)D}{L^{3/4}} + \frac{D Q^{1/2}}{L^{1/4}}  + \mathcal{R}^T + \frac{2AD^2\beta}{L^{3/4}}
+        %\tag{$\sum_{\ell = 1}^{L}\frac{1}{(\ell+4)^{1/4}} \leq 4 L^{3/4}$}
+\end{align*}
+
+\begin{align*}
+    \frac{1}{T}\sum_{t=1}^{T} \mathcal{G}_0^t  
+    &\leq \frac{DG}{L^{1/4}A} + \frac{4\left(\beta C_p + C_d\right)D}{L^{3/4}} + \frac{D}{nLT} \sum_{t=1}^{T} \sum_{\ell=1}^{L} \sum_{i=1}^{n} \| \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell} \| \\
+    &+  \frac{1}{nT} \sum_{i=1}^{n} \sum_{t=1}^{T}\langle \Tilde{\vect{a}}^{t}_{i, \ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle + \frac{2AD^2\beta}{L^{3/4}}\\
+    %
+    &\leq \frac{DG}{L^{1/4}A} + \frac{4\left(\beta C_p + C_d\right)D}{L^{3/4}} + \frac{D}{nLT} \sum_{t=1}^{T} \sum_{\ell=1}^{L} \sum_{i=1}^{n} \| \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell} \| \\
+    &+  \frac{1}{nT} \sum_{i=1}^{n} \mathcal{R}^T + \frac{2AD^2\beta}{L^{3/4}}\\
+    \tag{$\vect{v}^t_{i,\ell}$ are chosen by the online oracles with regret $\mathcal{R}^T$} 
+    \\
+    %
+    &\leq \frac{DG}{L^{1/4}A} + \frac{4\left(\beta C_p + C_d\right)D}{L^{3/4}} + \frac{D}{nLT} \sum_{t=1}^{T} \sum_{\ell=1}^{L} \sum_{i=1}^{n} \| \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell} \| \\
+    &+ \frac{\mathcal{R}^T}{T} + \frac{2AD^2\beta}{L^{3/4}}
+\end{align*}
+     
+\begin{align*}
+    \frac{1}{T}\sum_{t=1}^{T} \E{\mathcal{G}_0^t}
+     &\leq \frac{DG}{L^{1/4}A} + \frac{4\left(\beta C_p + C_d\right)D}{L^{3/4}} + \frac{D}{nLT} \sum_{t=1}^{T} \sum_{\ell=1}^{L} \sum_{i=1}^{n} \E {\| \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell} \|} \\
+    &+ \frac{\mathcal{R}^T}{T} + \frac{2AD^2\beta}{L^{3/4}}\\
+    %
+    &\leq \frac{DG}{L^{1/4}A} + \frac{4\left(\beta C_p + C_d\right)D}{L^{3/4}} + \frac{Q^{1/2}D}{L}    \sum_{\ell=1}^{L} \frac{1}{(\ell+4)^{1/4}} \\
+    &+ \frac{\mathcal{R}^T}{T} + \frac{2AD^2\beta}{L^{3/4}}
+    \tag{By claim \ref{claim:quantized_fw}}\\
+    %
+    &\leq \frac{DG}{L^{1/4}A} + \frac{4\left(\beta C_p + C_d\right)D}{L^{3/4}} + \frac{D Q^{1/2}}{L^{1/4}}  + \frac{\mathcal{R}^T}{T} + \frac{2AD^2\beta}{L^{3/4}}
+    \tag{$\sum_{\ell = 1}^{L}\frac{1}{(\ell+4)^{1/4}} \leq 4 L^{3/4}$}\\
+    %
+    &= \frac{DG + ADQ^{1/2}}{L^{1/4}} + \frac{4(\beta C_p + C_d) D + 2AD^2\beta}{L^{3/4}}
+     + \frac{\mathcal{R}^T}{T}
+\end{align*}
+Recall that, 
+\begin{align*}
+    \mathcal{G}_0^t &= \E{ \left[ \mathcal{G}_{\ell}^t \right]} \\
+    &= \E{\left[ \max_{\vect{a} \in \mathcal{K}} \langle \nabla F_t\left( \overline{\vect{x}}^t \right), \overline{\vect{x}}^t - \vect{a} \rangle \right]} 
+\end{align*}
+Therefore by lemma \ref{lemma:final_step}, 
+\begin{align*}
+    \frac{1}{T} \sum_{t=1}^T \E\left[ \max_{\vect{a} \in \mathcal{K}} \langle \nabla F_t\left( \vect{x}_i^t \right), \vect{x}_i^t - \vect{a} \rangle \right] &\leq \E{\left[ \max_{\vect{a} \in \mathcal{K}} \langle \nabla F_t\left( \overline{\vect{x}}^t \right), \overline{\vect{x}}^t - \vect{a} \rangle \right]} + \frac{(\beta D + G)C_p \log L}{L} \\
+    %
+    &\leq \frac{DG + ADQ^{1/2}}{L^{1/4}} + \frac{4(\beta C_p + C_d) D + 2AD^2\beta}{L^{3/4}} \\
+    &+ \frac{\mathcal{R}^T}{T} + \frac{(\beta D + G)C_p \log L}{L}
+\end{align*}
+\end{proof}
+
+\begin{theorem}
+\label{thm:stoc:version2}
+Let $\mathcal{K}$ be a convex set with diameter $D$. Assume that for every $1 \leq t \leq T$, 
+\begin{enumerate}
+	\item functions $f^{t}_{i}$ are $\beta$-smooth, i.e. $\nabla f^{t}_{i}$ is $\beta$-Lipschitz,  (so $F^{t}$ is $\beta$-smooth);
+	\item $\| \nabla f^{t}_{i}\| \leq G$ (so $\| \nabla F^{t}\| \leq G$);
+	\item the gradient estimates are unbiased with bounded variance $\sigma^{2}$, i.e., 
+		$\E [\widetilde{\nabla} f^{t}_{i}(\vect{x}^{t}_{i,\ell})] = \nabla f^{t}_{i}(\vect{x}^{t}_{i,\ell})$
+		and $\bigl \| \widetilde{\nabla} f^{t}_{i}(\vect{x}^{t}_{i,\ell})] - \nabla f^{t}_{i}(\vect{x}^{t}_{i,\ell}) \bigr \| \leq \sigma$
+		for every $1 \leq i \leq n$ and $1 \leq \ell \leq L$;
+	\item the gradient estimates are $\widetilde{\beta}$-Lipschitz.
+\end{enumerate}
+Then, choosing the step-sizes $\eta_\ell = \min \{1, \frac{A}{\ell^{3/4}}\}$ where $A \in \mathbb{R}_+$. For all $1 \leq i \leq n$, 
+\begin{align*}
+    \frac{1}{T} \sum_{t=1}^T \E\left[ \max_{\vect{a} \in \mathcal{K}} \langle \nabla F_t\left( \vect{x}_i^t \right), \vect{x}_i^t - \vect{a} \rangle \right]
+    &\leq \frac{DG + ADQ^{1/2}}{L^{1/4}} + \frac{2AD^2\beta}{L^{3/4}} \\
+    &+\left[ \left(\beta D + G\right) + \left(\beta C_p + C_d\right)D \right]  \frac{\log L }{L} + \frac{\mathcal{R}^T}{T} 
+\end{align*}
+Choosing $L=T$ and oracles as gradient descent or follow-the-perturbed-leader with regret $\mathcal{R}^T =
+O\left(\sqrt{T}\right)$, we obtain a convergence rate of $O\left( \dfrac{DG + ADQ^{1/2}}{T^{1/4}} \right)$
+
+\end{theorem}
+
+
+\begin{proof}
+By equation \ref{eq:eta_gap_ell} of theorem \ref{thm:gap}, setting $\alpha = \frac{3}{4}$
+\begin{align}
+         \eta_{\ell} \mathcal{G}^t_{\ell} 
+        & \leq F_t \left( \overline{\vect{x}}^t_{\ell} \right) - F_t \left( \overline{\vect{x}}^t_{\ell+1} \right) 
+        + \eta_{\ell}\left( \frac{\beta C_p + C_d}{\ell}\right)D + \frac{\eta_{\ell}}{n} \sum_{i=1}^{n}\langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{a}^t_{\ell} \rangle + \eta^2_{\ell}D^2 \frac{\beta}{2}
+\end{align}
+Thus, 
+\begin{align*}
+        \mathcal{G}^t_{\ell} 
+        & \leq 
+         \frac{1}{\eta_{\ell}}\left(F_t \left( \overline{\vect{x}}^t_{\ell} \right) - F_t \left( \overline{\vect{x}}^t_{\ell+1} \right) \right) 
+        + \left( \frac{\beta C_p + C_d}{\ell}\right)D + \frac{1}{n} \sum_{i=1}^{n}\langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle + \eta_{\ell}D^2 \frac{\beta}{2} \\
+        %
+        & \leq \frac{\ell^{3/4}}{A}\left(F_t \left( \overline{\vect{x}}^t_{\ell} \right) - F_t \left( \overline{\vect{x}}^t_{\ell+1} \right) \right) 
+        + \left( \frac{\beta C_p + C_d}{\ell}\right)D + \frac{1}{n} \sum_{i=1}^{n}\langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle + \eta_{\ell}D^2 \frac{\beta}{2} \tag{$\eta_{\ell} = \frac{A}{\ell^{3/4}}$}\\
+       %
+       &\leq \frac{L^{3/4}}{A}\left(F_t \left( \Bar{x}^t_{\ell} \right) - F_t \left( \Bar{x}^t_{\ell+1} \right) \right) 
+         + \left( \frac{\beta C_p + C_d}{\ell}\right)D 
+         +\frac{1}{n} \sum_{i=1}^{n}\langle \vect{d}^t_{i,\ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle \\
+         & + \eta_{\ell}D^2 \frac{\beta}{2} \tag{$L \geq \ell$} \\
+        %
+        & \leq \frac{L^{3/4}}{A}\left(F_t \left( \Bar{x}^t_{\ell} \right) - F_t \left( \Bar{x}^t_{\ell+1} \right) \right) 
+         + \left( \frac{\beta C_p + C_d}{\ell}\right)D 
+         +\frac{1}{n} \sum_{i=1}^{n}\langle \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle \\
+         & + \frac{1}{n}\sum_{i=1}^{n}\langle \Tilde{\vect{a}}^{t}_{i, \ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle + \eta_{\ell}D^2 \frac{\beta}{2}\\
+         %
+         & \leq \frac{L^{3/4}}{A}\left(F_t \left( \Bar{x}^t_{\ell} \right) - F_t \left( \Bar{x}^t_{\ell+1} \right) \right) 
+         + \left( \frac{\beta C_p + C_d}{\ell}\right)D 
+         +\frac{1}{n} \sum_{i=1}^{n}  \| \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell} \| \| \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \| \\
+         & + \frac{1}{n}\sum_{i=1}^{n}\langle \Tilde{\vect{a}}^{t}_{i, \ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle + \eta_{\ell}D^2 \frac{\beta}{2} \tag{Cauchy-Schwarz} \\ 
+        %
+       & \leq \frac{L^{3/4}}{A}\left(F_t \left( \Bar{x}^t_{\ell} \right) - F_t \left( \Bar{x}^t_{\ell+1} \right) \right) 
+         + \left( \frac{\beta C_p + C_d}{\ell}\right)D 
+         +\frac{D}{n} \sum_{i=1}^{n}  \| \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell} \| \\
+         & + \frac{1}{n}\sum_{i=1}^{n}\langle \Tilde{\vect{a}}^{t}_{i, \ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle + \eta_{\ell}D^2 \frac{\beta}{2} \tag{$\vect{v}^t_{i,\ell},\vect{a}^{t}_{\ell} \in \mathcal{K}^2 \Rightarrow \| \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \| \leq D$}\\
+\end{align*}
+
+\begin{align*}
+        \mathcal{G}^t_{0}
+        &= \frac{1}{L} \sum_{\ell=1}^{L}\mathcal{G}^{t}_{\ell}\\
+        & \leq \frac{L^{3/4}}{LA} \sum_{\ell=1}^{L} \left(F_t \left( \overline{\vect{x}}^t_{\ell} \right) - F_t \left( \overline{\vect{x}}^t_{\ell+1} \right) \right) + \frac{\left(\beta C_p + C_d\right)D}{L} \sum_{\ell =1}^{L} \frac{1}{\ell} + \frac{D}{nL} \sum_{\ell=1}^{L} \sum_{i=1}^{n} \| \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell} \|\\
+        &+ \frac{1}{n}\sum_{i=1}^{n}\langle \Tilde{\vect{a}}^{t}_{i, \ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle + \frac{AD^2\beta}{2L} \sum_{\ell =1}^{L} \frac{1}{\ell}\\
+        %
+        &\leq \frac{1}{L^{1/4}A} \sum_{\ell=1}^{L} \left(F_t \left( \overline{\vect{x}}^t_{\ell} \right) - F_t \left( \overline{\vect{x}}^t_{\ell+1} \right) \right) + \frac{\left(\beta C_p + C_d\right)D \log L }{L} + \frac{D}{nL} \sum_{\ell=1}^{L} \sum_{i=1}^{n} \| \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell} \| \\
+        &+ \frac{1}{n}\sum_{i=1}^{n}\langle \Tilde{\vect{a}}^{t}_{i, \ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle + \frac{2AD^2\beta}{L^{3/4}}  \tag{$\sum_{\ell =1}^{L} \frac{1}{\ell} \leq \log L $}\\
+        %
+         &\leq \frac{1}{L^{1/4}A} \left(F_t \left( \overline{\vect{x}}^t_{1} \right) - F_t \left( \overline{\vect{x}}^t_{L+1} \right) \right) + \frac{\left(\beta C_p + C_d\right)D \log L }{L} + \frac{D}{nL} \sum_{\ell=1}^{L} \sum_{i=1}^{n} \| \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell} \| \\
+         &+ \frac{1}{n}\sum_{i=1}^{n}\langle \Tilde{\vect{a}}^{t}_{i, \ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle + \frac{2AD^2\beta}{L^{3/4}}
+         \tag{$\sum_{\ell=1}^{L} F_t\left(\overline{\vect{x}}^t_{\ell} \right) - F_t \left( \overline{\vect{x}}^t_{\ell+1}\right)$ is a telescopic sum}\\
+        %
+        &\leq \frac{G}{L^{1/4}A} \| \overline{\vect{x}}^t_{1} - \overline{\vect{x}}^t_{L+1} \| + \frac{\left(\beta C_p + C_d\right)D \log L }{L} + \frac{D}{nL} \sum_{\ell=1}^{L} \sum_{i=1}^{n} \| \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell} \| \\
+        &+ \frac{1}{n}\sum_{i=1}^{n}\langle \Tilde{\vect{a}}^{t}_{i, \ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle + \frac{2AD^2\beta}{L^{3/4}}
+        \tag{$F_t$ is $G$-Lipschitz }\\
+        %
+        &\leq \frac{DG}{L^{1/4}A} + \frac{\left(\beta C_p + C_d\right)D \log L }{L} + \frac{D}{nL} \sum_{\ell=1}^{L} \sum_{i=1}^{n} \| \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell} \| \\
+        &+  \frac{1}{n}\sum_{i=1}^{n}\langle \Tilde{\vect{a}}^{t}_{i, \ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle + \frac{2AD^2\beta}{L^{3/4}}
+        \tag{$\overline{\vect{x}}^t_{1}, \overline{\vect{x}}^t_{L+1} \in \mathcal{K}^2 \Rightarrow \| \overline{\vect{x}}^t_{1} -  \overline{\vect{x}}^t_{L+1} \| \leq D$}\\
+        %
+        %&\leq \frac{DG}{L^{1/4}A} + \frac{4\left(\beta C_p + C_d\right)D}{L^{3/4}} + \frac{D Q^{1/2}}{L} \sum_{\ell=1}^{L} \frac{1}{(\ell+4)^{1/4}} + \mathcal{R}^T + \frac{2AD^2\beta}{L^{3/4}}
+        %\tag{By claim \ref{claim:quantized_fw}}\\
+        %
+        %&\leq \frac{DG}{L^{1/4}A} + \frac{4\left(\beta C_p + C_d\right)D}{L^{3/4}} + \frac{D Q^{1/2}}{L^{1/4}}  + \mathcal{R}^T + \frac{2AD^2\beta}{L^{3/4}}
+        %\tag{$\sum_{\ell = 1}^{L}\frac{1}{(\ell+4)^{1/4}} \leq 4 L^{3/4}$}
+\end{align*}
+
+\begin{align*}
+    \frac{1}{T}\sum_{t=1}^{T} \mathcal{G}_0^t  
+    &\leq \frac{DG}{L^{1/4}A} + \frac{\left(\beta C_p + C_d\right)D \log L }{L} + \frac{D}{nLT} \sum_{t=1}^{T} \sum_{\ell=1}^{L} \sum_{i=1}^{n} \| \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell} \| \\
+    &+  \frac{1}{nT} \sum_{i=1}^{n} \sum_{t=1}^{T}\langle \Tilde{\vect{a}}^{t}_{i, \ell}, \vect{v}^t_{i,\ell} - \vect{a}^{t}_{\ell} \rangle + \frac{2AD^2\beta}{L^{3/4}}\\
+    %
+    &\leq \frac{DG}{L^{1/4}A} +\frac{\left(\beta C_p + C_d\right)D \log L }{L} + \frac{D}{nLT} \sum_{t=1}^{T} \sum_{\ell=1}^{L} \sum_{i=1}^{n} \| \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell} \| \\
+    &+  \frac{1}{nT} \sum_{i=1}^{n} \mathcal{R}^T + \frac{2AD^2\beta}{L^{3/4}}\\
+    \tag{$\vect{v}^t_{i,\ell}$ are chosen by the online oracles with regret $\mathcal{R}^T$} 
+    \\
+    %
+    &\leq \frac{DG}{L^{1/4}A} + \frac{\left(\beta C_p + C_d\right)D \log L }{L} + \frac{D}{nLT} \sum_{t=1}^{T} \sum_{\ell=1}^{L} \sum_{i=1}^{n} \| \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell} \| \\
+    &+ \frac{\mathcal{R}^T}{T} + \frac{2AD^2\beta}{L^{3/4}}
+\end{align*}
+     
+\begin{align*}
+    \frac{1}{T}\sum_{t=1}^{T} \E{\mathcal{G}_0^t}
+     &\leq \frac{DG}{L^{1/4}A} + \frac{\left(\beta C_p + C_d\right)D \log L }{L} + \frac{D}{nLT} \sum_{t=1}^{T} \sum_{\ell=1}^{L} \sum_{i=1}^{n} \E {\| \vect{d}^t_{i,\ell} - \Tilde{\vect{a}}^{t}_{i, \ell} \|} \\
+    &+ \frac{\mathcal{R}^T}{T} + \frac{2AD^2\beta}{L^{3/4}}\\
+    %
+    &\leq \frac{DG}{L^{1/4}A} + \frac{\left(\beta C_p + C_d\right)D \log L }{L} + \frac{Q^{1/2}D}{L}    \sum_{\ell=1}^{L} \frac{1}{(\ell+4)^{1/4}} \\
+    &+ \frac{\mathcal{R}^T}{T} + \frac{2AD^2\beta}{L^{3/4}}
+    \tag{By claim \ref{claim:quantized_fw}}\\
+    %
+    &\leq \frac{DG}{L^{1/4}A} + \frac{\left(\beta C_p + C_d\right)D \log L }{L} + \frac{D Q^{1/2}}{L^{1/4}}  + \frac{\mathcal{R}^T}{T} + \frac{2AD^2\beta}{L^{3/4}}
+    \tag{$\sum_{\ell = 1}^{L}\frac{1}{(\ell+4)^{1/4}} \leq 4 L^{3/4}$}\\
+    %
+    &= \frac{DG + ADQ^{1/2}}{L^{1/4}} + \frac{2AD^2\beta}{L^{3/4}} + \frac{\left(\beta C_p + C_d\right)D \log L }{L}
+     + \frac{\mathcal{R}^T}{T}
+\end{align*}
+Recall that, 
+\begin{align*}
+    \mathcal{G}_0^t &= \E{ \left[ \mathcal{G}_{\ell}^t \right]} \\
+    &= \E{\left[ \max_{\vect{a} \in \mathcal{K}} \langle \nabla F_t\left( \overline{\vect{x}}^t \right), \overline{\vect{x}}^t - \vect{a} \rangle \right]} 
+\end{align*}
+Therefore by lemma \ref{lemma:final_step}, 
+\begin{align*}
+    \frac{1}{T} \sum_{t=1}^T \E\left[ \max_{\vect{a} \in \mathcal{K}} \langle \nabla F_t\left( \vect{x}_i^t \right), \vect{x}_i^t - \vect{a} \rangle \right] &\leq \E{\left[ \max_{\vect{a} \in \mathcal{K}} \langle \nabla F_t\left( \overline{\vect{x}}^t \right), \overline{\vect{x}}^t - \vect{a} \rangle \right]} + \frac{(\beta D + G)C_p \log L}{L} \\
+    %
+    &\leq \frac{DG + ADQ^{1/2}}{L^{1/4}} + \frac{2AD^2\beta}{L^{3/4}} \\
+    &+\left[ \left(\beta D + G\right) + \left(\beta C_p + C_d\right)D \right]  \frac{\log L }{L} + \frac{\mathcal{R}^T}{T} 
+\end{align*}
+\end{proof}
